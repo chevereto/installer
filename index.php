@@ -693,6 +693,12 @@ class processAction {
 						$ZipArchive->close();
 						$time_taken = round(microtime(TRUE) - $time_start, 2);
 						@unlink($file_path);
+						// Also remove some free edition docs
+						if($_REQUEST['edition'] == 'paid') {
+							foreach(array('AGPLv3', 'LICENSE', 'README.md') as $v) {
+								@unlink(__ROOT_PATH__ . $v);
+							}
+						}
 					} else {
 						throw new Exception(strtr("Can't extract %f - %m", array(
 							'%f' => $file_path,
@@ -1432,7 +1438,8 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 		var remoteSrcUrl = '<?php echo Settings::get('chevereto')->src_url; ?>';
 		var editions = {paid: 'Chevereto'};
 		var onLeaveMessage = 'The installation is not yet completed. Are you sure that you want to leave?';
-		if(!getParameterByName('UpgradeToPaid')) {
+		var UpgradeToPaid = typeof getParameterByName('UpgradeToPaid') !== typeof undefined;
+		if(!UpgradeToPaid) {
 			editions.free = 'Chevereto Free';
 		}
 		var title = document.title;
@@ -1612,11 +1619,16 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 									}
 									installer.log(response.response.message);
 									var s = 3;
-									installer.log('Redirecting to setup form in ' + s + 's');
+									var to = UpgradeToPaid ? 'install' : 'setup';
+									installer.log('Redirecting to ' + to + ' form in ' + s + 's');
 									setTimeout(function() {
 										installer.log('Redirecting now!');
 										installer.setWorking(false);
-										window.location.replace(rootUrl);
+										var redirectUrl = rootUrl;
+										if(UpgradeToPaid) {
+											redirectUrl += '/install';
+										}
+										window.location.replace(redirectUrl);
 									}, 1000*s);
 								},
 								function(error) {
@@ -1688,7 +1700,7 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 				function completeImage() {
 					++loadedImages;
 					if (loadImages.length == loadedImages) {
-						if(getParameterByName('UpgradeToPaid') == '') {
+						if(UpgradeToPaid) {
 							self.actions.choose('paid');
 						} else {
 							body.classList.add('body--splash');
