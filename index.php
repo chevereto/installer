@@ -744,7 +744,7 @@ if(isset($_REQUEST['action'])) {
 
 $page = $RequirementsCheck->missing ? 'error' : 'install';
 
-if($page == 'install' && preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
+if($page == 'install' && !isset($_REQUEST['UpgradeToPaid']) && preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
 	$nginx = '<p>Make sure that you add the following rules to your <a href="https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts" target="_blank">nginx.conf</a> server block before installing:</p>
 <textarea class="pre" ondblclick="this.select()">#Chevereto: Disable access to sensitive files
 location ~* ' . __ROOT_PATH_RELATIVE__ . '(app|content|lib)/.*\.(po|php|lock|sql)$ {
