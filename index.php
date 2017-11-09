@@ -320,7 +320,7 @@ if (@class_exists('ZipArchive')) {
 				$destination .= DIRECTORY_SEPARATOR;
 			}
 			if (substr($subdir, -1) != '/') {
-				$subdir .= '/;'
+				$subdir .= '/';
 			}
 			// Extract files
 			for ($i = 0; $i < $this->numFiles; $i++) {
