@@ -320,7 +320,7 @@ if (@class_exists('ZipArchive')) {
 				$destination .= DIRECTORY_SEPARATOR;
 			}
 			if (substr($subdir, -1) != '/') {
-				$subdir .= "/";
+				$subdir .= '/;'
 			}
 			// Extract files
 			for ($i = 0; $i < $this->numFiles; $i++) {
@@ -1438,7 +1438,7 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 		var remoteSrcUrl = '<?php echo Settings::get('chevereto')->src_url; ?>';
 		var editions = {paid: 'Chevereto'};
 		var onLeaveMessage = 'The installation is not yet completed. Are you sure that you want to leave?';
-		var UpgradeToPaid = typeof getParameterByName('UpgradeToPaid') !== typeof undefined;
+		var UpgradeToPaid = getParameterByName('UpgradeToPaid') == '';
 		if(!UpgradeToPaid) {
 			editions.free = 'Chevereto Free';
 		}
@@ -1487,7 +1487,13 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 		var installer = {
 			init: function() {
 				var self = this;
-				history.replaceState({screen: 'splash'}, title);
+				var state = {
+					screen: UpgradeToPaid ? 'install' : 'splash'
+				};
+				if(UpgradeToPaid) {
+					state.arg = 'paid';
+				}
+				history.replaceState(state, title);
 				background.setAttribute('class', 'background');
 				wrapper.insertBefore(background, wrapper.firstChild);
 				if(page != 'error') {
@@ -1626,7 +1632,7 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 										installer.setWorking(false);
 										var redirectUrl = rootUrl;
 										if(UpgradeToPaid) {
-											redirectUrl += '/install';
+											redirectUrl += 'install';
 										}
 										window.location.replace(redirectUrl);
 									}, 1000*s);
@@ -1701,7 +1707,7 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 					++loadedImages;
 					if (loadImages.length == loadedImages) {
 						if(UpgradeToPaid) {
-							self.actions.choose('paid');
+							self.actions.choose('paid', false);
 						} else {
 							body.classList.add('body--splash');
 							self.chooser();
