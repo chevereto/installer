@@ -17,17 +17,16 @@ This installs Chevereto (free or paid) in seconds by using your server to downlo
 
 REST API is methods are fully supported by this installer so you can access all functions programmatically direcly from your application. This API returns in JSON format.
 
-### Requests
 All API request must specify the `action` and `edition` parameters. Available actions are `download` and `extract`. Available editions are `free` and `paid`. The API accepts both `POST` (recommended) and `GET` requests.
 
-#### Download
+### Download
 ```
 /?action=download&edition=free // Chevereto Free
 /?action=download&edition=paid&license=<license_key> // Chevereto (paid)
 ```
 Downloads the target `edition` package in the installer directory. The `license` key parameter is only required for the paid edition.
 
-##### Response (success)
+#### Response (success)
 ```
 {  
    "status":{  
@@ -50,13 +49,13 @@ Downloads the target `edition` package in the installer directory. The `license`
 }
 ```
 
-#### Extract
+### Extract
 ```
 /?action=extract&edition=<edition>&fileBasename=<download_basename>
 ```
 Extracts the previously downloaded package and removes the package file. `<download_basename>` is the basename of the previously downloaded file (the one returned by `action=download`). This basename should be something like `chevereto-pkg-hUi9eyNc.zip`, please note that this file name is randomly generated.
 
-##### Response (success)
+#### Response (success)
 ```
 {  
    "status":{  
