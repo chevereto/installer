@@ -453,7 +453,7 @@ class RequirementsCheck {
 			} else {
 				$api_parse_url = parse_url(Settings::get('chevereto')->api_url);
 				$api_offline_link = '<a href="https://isitdownorjust.me/' . $api_parse_url['host'] . '" target="_blank">offline</a>';
-				$this->addMissing('Chevereto API', Settings::get('chevereto')->api_url, "Can't connect to %l (getaddrinfo failed), check for any network restriction or maybe our server is $api_offline_link at this time");
+				$this->addMissing('Chevereto API', Settings::get('chevereto')->api_url, "Can't connect to %l. Check for any outgoing network blocking or maybe our server is $api_offline_link at this time");
 			}
 	  }
 	}
