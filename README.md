@@ -28,24 +28,24 @@ Downloads the target `edition` package in the installer directory. The `license`
 
 #### Response (success)
 ```
-{  
-   "status":{  
-      "code":200,
-      "description":"OK"
-   },
-   "response":{  
-      "code":200,
-      "message":"Downloaded chevereto-pkg-bbf9ab00.zip (4.4 MB @6.27MB\/s.)"
-   },
-   "request":{  
-      "action":"download",
-      "edition":"free"
-   },
-   "data":{  
-      "download":{  
-         "fileBasename":"chevereto-pkg-bbf9ab00.zip"
-      }
-   }
+{  
+   "status":{  
+      "code":200,
+      "description":"OK"
+   },
+   "response":{  
+      "code":200,
+      "message":"Downloaded chevereto-pkg-bbf9ab00.zip (4.4 MB @6.27MB\/s.)"
+   },
+   "request":{  
+      "action":"download",
+      "edition":"free"
+   },
+   "data":{  
+      "download":{  
+         "fileBasename":"chevereto-pkg-bbf9ab00.zip"
+      }
+   }
 }
 ```
 
@@ -57,19 +57,19 @@ Extracts the previously downloaded package and removes the package file. `<downl
 
 #### Response (success)
 ```
-{  
-   "status":{  
-      "code":200,
-      "description":"OK"
-   },
-   "response":{  
-      "code":200,
-      "message":"Extraction completeted (414 files in 0.19s)"
-   },
-   "request":{  
-      "action":"extract",
-      "edition":"free",
-      "fileBasename":"chevereto-pkg-bbf9ab00.zip"
-   }
+{  
+   "status":{  
+      "code":200,
+      "description":"OK"
+   },
+   "response":{  
+      "code":200,
+      "message":"Extraction completeted (414 files in 0.19s)"
+   },
+   "request":{  
+      "action":"extract",
+      "edition":"free",
+      "fileBasename":"chevereto-pkg-bbf9ab00.zip"
+   }
 }
 ```

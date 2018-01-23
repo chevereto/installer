@@ -34,6 +34,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 @ini_set('default_charset', 'utf-8');
 @set_time_limit(0);
 setlocale(LC_ALL, 'en_US.UTF8');
+define('__SESSION_START__', @session_start()); // Avoid premature headers false-positive
 
 class Settings {
 	static $chevereto = array(
@@ -71,6 +72,8 @@ class Settings {
 		return $return;
 	}
 }
+
+
 
 define('__ROOT_PATH__', rtrim(str_replace('\\','/', __DIR__), '/') . '/');
 define('__ROOT_PATH_RELATIVE__', rtrim(@dirname($_SERVER['SCRIPT_NAME']), '\/') . '/');
@@ -364,10 +367,6 @@ class RequirementsCheck {
 	 	@ini_set('session.use_trans_sid', FALSE);
 	 	@ini_set('session.use_only_cookies', TRUE);
 	 	@ini_set('session.hash_bits_per_character', 4);
-	  $read_write = array();
-	  foreach (array('read','write') as $k => $v) {
-	  	$read_write[$v] = create_function('$var', 'return @is_' . $v . 'able($var);');
-	  }
 	  if (version_compare(PHP_VERSION, '5.4.0', '<')) {
 	  	$this->addMissing('PHP', 'https://php.net', 'Use a newer %l version (%c 5.4+ required, 7.0+ recommended)');
 	  }
@@ -379,19 +378,15 @@ class RequirementsCheck {
 				$this->addMissing(array('timezone', 'date.timezone'), array('http://php.net/manual/en/timezones.php', 'http://php.net/manual/en/datetime.configuration.php#ini.date.timezone'), '<b>'. $tz .'</b> is not a valid %l0 identifier in %l1');
 			}
 	  }
+		$rw_fn = array('read' => 'is_readable', 'write' => 'is_writeable');
 	  $session_link = 'http://php.net/manual/en/book.session.php';
-	  if (!@session_start()) {
+	  if (!__SESSION_START__) {
 	  	$this->addMissing('sessions', $session_link, 'Enable %l support (session_start)' );
 	  }
 	  $session_save_path = @realpath(@session_save_path());
 	  if ($session_save_path) {
-			foreach ($read_write as $k => $v) {
-				if ($k == 'read') {
-					continue;
-				}
-				if (!$v($session_save_path)) {
-					$session_errors[] = $k;
-				}
+			if(!is_writable($session_save_path)) {
+				$session_errors[] = $k;
 			}
 			if (isset($session_errors)) {
 				$this->addMissing(array('session', 'session.save_path'), array($session_link, 'http://php.net/manual/en/session.configuration.php#ini.session.save-path'), str_replace('%s', implode('/', $session_errors), 'Missing PHP <b>%s</b> permission in <b>'.$session_save_path.'</b> (%l1)'));
@@ -402,8 +397,8 @@ class RequirementsCheck {
 			$this->addMissing('sessions', $session_link, 'Any server setting related to %l support (%c are not working)');
 	  }
 		foreach(array(__ROOT_PATH__, __INSTALLER_FILEPATH__) as $var) {
-			foreach ($read_write as $k => $v) {
-				if (!$v($var)) {
+			foreach (array('read','write') as $k => $v) {
+				if (!@$rw_fn[$v]($var)) {
 					$permissions_errors[] =  $k;
 				}
 		  }
@@ -467,7 +462,7 @@ class RequirementsCheck {
 				'PDO' => 'book.pdo',
 				'PDO_MYSQL' => 'ref.pdo-mysql',
 				'session' => 'book.session',
-				'zip' => 'book.zip',
+				//'zip' => 'book.zip', // Not needed isn't?
 			),
 			'classes' => array(
 				'DateTime' => 'class.datetime',
@@ -492,37 +487,36 @@ class RequirementsCheck {
 	      $n = $nouns[$type];
 	      $core_check = $core_check_function[$type];
 	      $missing = array();
-	      $get = create_function(NULL, 'return @' . $core_check[0] . '();');
-	      $loaded = $get();
+	      $loaded = @$core_check[0]();
 	      if ($loaded) {
-				foreach ($loaded as $k => &$v) {
-					$v = strtolower($v);
-			 	}
+					foreach ($loaded as $k => &$v) {
+						$v = strtolower($v);
+				 	}
 	      } else {
-				$function = create_function('$var', 'return @' . $core_check[1] . '($var);');
+					$function = create_function('$var', 'return @' . $core_check[1] . '($var);');
 	      }
 	      foreach ($array as $k => $v) {
-				if (($loaded && !in_array(strtolower($k), $loaded)) || ($function && $function($k))) {
-					$missing['c'][] = $k;
-					$missing['l'][] = 'http://www.php.net/manual/'.$v.'.php';
-				}
+					if (($loaded && !in_array(strtolower($k), $loaded)) || ($function && $function($k))) {
+						$missing['c'][] = $k;
+						$missing['l'][] = 'http://www.php.net/manual/'.$v.'.php';
+					}
 	      }
 	      if ($missing) {
-				$l = array();
-				$c = array();
-				$message = 'Enable %l PHP <b>%n</b>';
-				if(count($missing['c']) == 1) {
-					$missing_strtr = array('%n' => $n[0]);
-				} else {
-					foreach($missing['l'] as $k => $v) {
-						$l[] = '%l' . $k;
+					$l = array();
+					$c = array();
+					$message = 'Enable %l PHP <b>%n</b>';
+					if(count($missing['c']) == 1) {
+						$missing_strtr = array('%n' => $n[0]);
+					} else {
+						foreach($missing['l'] as $k => $v) {
+							$l[] = '%l' . $k;
+						}
+						$last = array_pop($l);
+						$missing_strtr['%l'] = implode(', ', $l) . ' and ' . $last;
+						$missing_strtr['%n'] = $n[1];
 					}
-					$last = array_pop($l);
-					$missing_strtr['%l'] = implode(', ', $l) . ' and ' . $last;
-					$missing_strtr['%n'] = $n[1];
-				}
-				$message = strtr($message, $missing_strtr);
-				$this->addMissing($missing['c'], $missing['l'], $message);
+					$message = strtr($message, $missing_strtr);
+					$this->addMissing($missing['c'], $missing['l'], $message);
 	      }
 		}
   }
