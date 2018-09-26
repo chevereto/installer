@@ -15,7 +15,7 @@ This installs Chevereto (free or paid) in seconds by using your server to downlo
 
 ## API
 
-REST API is methods are fully supported by this installer so you can access all functions programmatically direcly from your application. This API returns in JSON format.
+You can access all functions programmatically direcly from your application. This API returns in JSON format.
 
 All API request must specify the `action` and `edition` parameters. Available actions are `download` and `extract`. Available editions are `free` and `paid`. The API accepts both `POST` (recommended) and `GET` requests.
 
