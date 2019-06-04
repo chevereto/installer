@@ -4,7 +4,7 @@
     Chevereto web installer (universal)
     http://chevereto.com/
 
-    @version 1.1.0
+    @version 1.2.0
     @author	Rodolfo Berrios A. <http://rodolfoberrios.com/>
 
     No copyright restrictions. I don't give a damn, but you can't touch this:
