@@ -49,21 +49,23 @@ class Settings
         'free' => array(
             'zipball' => 'https://api.github.com/repos/Chevereto/Chevereto-Free/zipball',
             'folder' => 'Chevereto-Chevereto-Free-',
-        )
+        ),
     );
     private static $instance;
+
     public function __construct()
     {
         $chevereto_url = self::$chevereto['url'];
         foreach (array('api', 'src') as $v) {
-            self::$chevereto[$v . '_url'] = $chevereto_url . '/' . $v . ($v == 'src' ? '/img/installer' : null);
+            self::$chevereto[$v.'_url'] = $chevereto_url.'/'.$v.($v == 'src' ? '/img/installer' : null);
         }
         self::$instance = $this;
     }
+
     public static function get($var)
     {
         if (is_null(self::$instance)) {
-            self::$instance = new self;
+            self::$instance = new self();
         }
         $return = self::$$var;
         if (is_array($return)) {
@@ -72,32 +74,32 @@ class Settings
                 $return = json_decode($json);
             }
         }
+
         return $return;
     }
 }
 
-
-
-define('__ROOT_PATH__', rtrim(str_replace('\\', '/', __DIR__), '/') . '/');
-define('__ROOT_PATH_RELATIVE__', rtrim(@dirname($_SERVER['SCRIPT_NAME']), '\/') . '/');
+define('__ROOT_PATH__', rtrim(str_replace('\\', '/', __DIR__), '/').'/');
+define('__ROOT_PATH_RELATIVE__', rtrim(@dirname($_SERVER['SCRIPT_NAME']), '\/').'/');
 define('__INSTALLER_FILE__', basename(__FILE__));
-define('__INSTALLER_FILEPATH__', __ROOT_PATH__ . __INSTALLER_FILE__);
+define('__INSTALLER_FILEPATH__', __ROOT_PATH__.__INSTALLER_FILE__);
 
 define('__HTTP_HOST__', $_SERVER['HTTP_HOST']);
-define('__HTTP_PROTOCOL__', 'http' . (((!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') ? 's' : null));
-define('__ROOT_URL__', __HTTP_PROTOCOL__ . "://" . __HTTP_HOST__ . __ROOT_PATH_RELATIVE__);
+define('__HTTP_PROTOCOL__', 'http'.(((!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') ? 's' : null));
+define('__ROOT_URL__', __HTTP_PROTOCOL__.'://'.__HTTP_HOST__.__ROOT_PATH_RELATIVE__);
 
-define('__SERVER_STRING__', 'Server ' . __HTTP_HOST__ . ' PHP ' . phpversion());
+define('__SERVER_STRING__', 'Server '.__HTTP_HOST__.' PHP '.phpversion());
 define('__SERVER_REWRITE__', null);
 
 /**
  * Generate a random string using the best available method.
  *
- * @param int $length Length of the generated random string.
- * @return array An array with the generated random values.
+ * @param int $length length of the generated random string
+ *
+ * @return array an array with the generated random values
  * @autor Baba <http://stackoverflow.com/a/17267718>
  */
-function randomString($length=8)
+function randomString($length = 8)
 {
     switch (true) {
         case function_exists('mcrypt_create_iv'):
@@ -112,11 +114,12 @@ function randomString($length=8)
         default: // Fallback
             $i = 0;
             $r = '';
-            while ($i ++ < $length) {
+            while ($i++ < $length) {
                 $r .= chr(mt_rand(0, 255));
             }
         break;
     }
+
     return substr(bin2hex($r), 0, $length);
 }
 
@@ -128,14 +131,14 @@ function randomString($length=8)
  *
  * The downloaded content can be returned as a string or save it as a file.
  *
- * @param string $url 		Target URL to fetch.
- * @param string $file_path File where the downloaded content should be saved.
+ * @param string $url       target URL to fetch
+ * @param string $file_path file where the downloaded content should be saved
  *
  * @throws Exception
  *
- * @return mixed File as string or boolean if $file_path was set.
+ * @return mixed file as string or boolean if $file_path was set
  */
-function getUrlContent($url, $options=null)
+function getUrlContent($url, $options = null)
 {
     if (!$url) {
         throw new Exception('Missing $url');
@@ -167,7 +170,7 @@ function getUrlContent($url, $options=null)
     if ($temp_file_path) {
         $out = @fopen($temp_file_path, 'wb');
         if (!$out) {
-            throw new Exception("Can't open temp file for read and write in " . __FUNCTION__ . '()');
+            throw new Exception("Can't open temp file for read and write in ".__FUNCTION__.'()');
         }
         curl_setopt($ch, CURLOPT_FILE, $out);
         @curl_exec($ch);
@@ -179,7 +182,7 @@ function getUrlContent($url, $options=null)
     if (curl_errno($ch)) {
         $curl_error = curl_error($ch);
         curl_close($ch);
-        throw new Exception('Curl error ' . $curl_error);
+        throw new Exception('Curl error '.$curl_error);
     }
     curl_close($ch);
     $return = array('transfer' => $transfer);
@@ -191,6 +194,7 @@ function getUrlContent($url, $options=null)
     if (!isset($return['contents']) && bytesToMb($transfer['size_download']) < 0.5) {
         $return['contents'] = file_get_contents($temp_file_path);
     }
+
     return $return;
 }
 
@@ -199,9 +203,9 @@ function getUrlContent($url, $options=null)
  *
  * Taken (sort of) from WordPress.
  *
- * @param int $code A HTTP status code.
+ * @param int $code a HTTP status code
  *
- * @return bool TRUE if the HTTP status header has been properly set.
+ * @return bool TRUE if the HTTP status header has been properly set
  */
 function setHttpStatusCode($code)
 {
@@ -214,6 +218,7 @@ function setHttpStatusCode($code)
         $protocol = 'HTTP/1.0';
     }
     $setstatusheader = "$protocol $code $desc";
+
     return @header($setstatusheader, true, $code);
 }
 
@@ -222,9 +227,9 @@ function setHttpStatusCode($code)
  *
  * Taken (sort of) from WordPress.
  *
- * @param string $code A HTTP status code.
+ * @param string $code a HTTP status code
  *
- * @return string HTTP status code description.
+ * @return string HTTP status code description
  */
 function getHttpStatusDesc($code)
 {
@@ -279,7 +284,7 @@ function getHttpStatusDesc($code)
         505 => 'HTTP Version Not Supported',
         506 => 'Variant Also Negotiates',
         507 => 'Insufficient Storage',
-        510 => 'Not Extended'
+        510 => 'Not Extended',
     );
     if (array_key_exists($code, $codes_to_desc)) {
         return $codes_to_desc[$code];
@@ -289,12 +294,12 @@ function getHttpStatusDesc($code)
 /**
  * Converts bytes to human readable representation.
  *
- * @param string $bytes Bytes to be formatted.
- * @param int    $round How many decimals you want to get, default 1.
+ * @param string $bytes bytes to be formatted
+ * @param int    $round how many decimals you want to get, default 1
  *
- * @return string Formatted size string like 10 MB.
+ * @return string formatted size string like 10 MB
  */
-function formatBytes($bytes, $round=1)
+function formatBytes($bytes, $round = 1)
 {
     if (!is_numeric($bytes)) {
         return false;
@@ -308,6 +313,7 @@ function formatBytes($bytes, $round=1)
         $threshold = $multiplier * 1000;
         if ($bytes < $threshold) {
             $size = round($bytes / $multiplier, $round);
+
             return "$size $v";
         }
     }
@@ -316,16 +322,17 @@ function formatBytes($bytes, $round=1)
 /**
  * Converts bytes to MB.
  *
- * @param string $bytes Bytes to be formatted.
+ * @param string $bytes bytes to be formatted
  *
- * @return float MB representation.
+ * @return float MB representation
  */
-function bytesToMb($bytes, $round=2)
+function bytesToMb($bytes, $round = 2)
 {
     $mb = $bytes / pow(10, 6);
     if ($round) {
         $mb = round($mb, $round);
     }
+
     return $mb;
 }
 
@@ -345,7 +352,7 @@ if (@class_exists('ZipArchive')) {
                 $subdir .= '/';
             }
             // Extract files
-            for ($i = 0; $i < $this->numFiles; $i++) {
+            for ($i = 0; $i < $this->numFiles; ++$i) {
                 $filename = $this->getNameIndex($i);
                 if (substr($filename, 0, mb_strlen($subdir, 'UTF-8')) == $subdir) {
                     $relativePath = substr($filename, mb_strlen($subdir, 'UTF-8'));
@@ -353,26 +360,27 @@ if (@class_exists('ZipArchive')) {
                     if (mb_strlen($relativePath, 'UTF-8') > 0) {
                         if (substr($filename, -1) == '/') { // Directory
                             // New dir
-                            if (!is_dir($destination . $relativePath)) {
-                                if (!@mkdir($destination . $relativePath, 0755, true)) {
+                            if (!is_dir($destination.$relativePath)) {
+                                if (!@mkdir($destination.$relativePath, 0755, true)) {
                                     $errors[$i] = $filename;
                                 }
                             }
                         } else {
                             if (dirname($relativePath) != '.') {
-                                if (!is_dir($destination . dirname($relativePath))) {
+                                if (!is_dir($destination.dirname($relativePath))) {
                                     // New dir (for file)
-                                    @mkdir($destination . dirname($relativePath), 0755, true);
+                                    @mkdir($destination.dirname($relativePath), 0755, true);
                                 }
                             }
                             // New file
-                            if (@file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
+                            if (@file_put_contents($destination.$relativePath, $this->getFromIndex($i)) === false) {
                                 $errors[$i] = $filename;
                             }
                         }
                     }
                 }
             }
+
             return $errors;
         }
     }
@@ -396,7 +404,7 @@ class RequirementsCheck
             $tz = @date_default_timezone_get();
             $dtz = @date_default_timezone_set($tz);
             if (!$dtz && !@date_default_timezone_set('America/Santiago')) {
-                $this->addMissing(array('timezone', 'date.timezone'), array('http://php.net/manual/en/timezones.php', 'http://php.net/manual/en/datetime.configuration.php#ini.date.timezone'), '<b>'. $tz .'</b> is not a valid %l0 identifier in %l1');
+                $this->addMissing(array('timezone', 'date.timezone'), array('http://php.net/manual/en/timezones.php', 'http://php.net/manual/en/datetime.configuration.php#ini.date.timezone'), '<b>'.$tz.'</b> is not a valid %l0 identifier in %l1');
             }
         }
         $rw_fn = array('read' => 'is_readable', 'write' => 'is_writeable');
@@ -418,15 +426,15 @@ class RequirementsCheck
             $this->addMissing('sessions', $session_link, 'Any server setting related to %l support (%c are not working)');
         }
         foreach (array(__ROOT_PATH__, __INSTALLER_FILEPATH__) as $var) {
-            foreach (array('read','write') as $k => $v) {
+            foreach (array('read', 'write') as $k => $v) {
                 if (!@$rw_fn[$v]($var)) {
-                    $permissions_errors[] =  $k;
+                    $permissions_errors[] = $k;
                 }
             }
             if (isset($permissions_errors)) {
                 $error = implode('/', $permissions_errors);
-                $component = $var . ' ' . $error . ' permission' . (count($permissions_errors) > 1 ? 's' : null);
-                $message = 'No PHP <b>' . $error . '</b> permission in <b>' . $var . '</b>';
+                $component = $var.' '.$error.' permission'.(count($permissions_errors) > 1 ? 's' : null);
+                $message = 'No PHP <b>'.$error.'</b> permission in <b>'.$var.'</b>';
                 $this->addMissing($component, null, $message);
                 unset($permissions_errors);
             }
@@ -434,9 +442,9 @@ class RequirementsCheck
         if (!@extension_loaded('gd') && !function_exists('gd_info')) {
             $this->addMissing('GD Library', 'http://php.net/manual/en/book.image.php', 'Enable %l');
         } else {
-            foreach (array('PNG','GIF','JPG','WBMP') as $k => $v) {
-                if (!imagetypes() & constant('IMG_' . $v)) {
-                    $this->addMissing('GD Library', 'http://php.net/manual/en/book.image.php', 'Enable %l ' . $v .' image support');
+            foreach (array('PNG', 'GIF', 'JPG', 'WBMP') as $k => $v) {
+                if (!imagetypes() & constant('IMG_'.$v)) {
+                    $this->addMissing('GD Library', 'http://php.net/manual/en/book.image.php', 'Enable %l '.$v.' image support');
                 }
             }
         }
@@ -450,7 +458,7 @@ class RequirementsCheck
         foreach (array('utf8_encode', 'utf8_decode') as $v) {
             if (!function_exists($v)) {
                 $utf8_errors['c'][] = $v;
-                $utf8_errors['l'][] = 'http://php.net/manual/en/function.' . str_replace('_', '-', $v) . '.php';
+                $utf8_errors['l'][] = 'http://php.net/manual/en/function.'.str_replace('_', '-', $v).'.php';
             }
         }
         if ($utf8_errors) {
@@ -463,16 +471,17 @@ class RequirementsCheck
             if ($headers) {
                 $http_statusCode = substr($headers[0], 9, 3);
                 if ($http_statusCode != 200) {
-                    $http_error_link = '<a href="https://en.wikipedia.org/wiki/HTTP_' . $http_statusCode . '" target="_blank">HTTP ' . $http_statusCode . '</a>';
+                    $http_error_link = '<a href="https://en.wikipedia.org/wiki/HTTP_'.$http_statusCode.'" target="_blank">HTTP '.$http_statusCode.'</a>';
                     $this->addMissing('Chevereto API', Settings::get('chevereto')->api_url, "An $http_error_link error occurred when trying to connect to %l");
                 }
             } else {
                 $api_parse_url = parse_url(Settings::get('chevereto')->api_url);
-                $api_offline_link = '<a href="https://isitdownorjust.me/' . $api_parse_url['host'] . '" target="_blank">offline</a>';
+                $api_offline_link = '<a href="https://isitdownorjust.me/'.$api_parse_url['host'].'" target="_blank">offline</a>';
                 $this->addMissing('Chevereto API', Settings::get('chevereto')->api_url, "Can't connect to %l. Check for any outgoing network blocking or maybe our server is $api_offline_link at this time");
             }
         }
     }
+
     private function detectMissingPHP()
     {
         $core = array(
@@ -495,7 +504,7 @@ class RequirementsCheck
                 'RegexIterator' => 'class.regexiterator',
                 'RecursiveIteratorIterator' => 'class.recursiveiteratoriterator',
                 'ZipArchive' => 'class.ziparchive',
-            )
+            ),
         );
         $nouns = array(
             'extensions' => array('extension', 'extensions'),
@@ -515,7 +524,7 @@ class RequirementsCheck
                     $v = strtolower($v);
                 }
             } else {
-                $function = create_function('$var', 'return @' . $core_check[1] . '($var);');
+                $function = create_function('$var', 'return @'.$core_check[1].'($var);');
             }
             foreach ($array as $k => $v) {
                 if (($loaded && !in_array(strtolower($k), $loaded)) || ($function && $function($k))) {
@@ -531,10 +540,10 @@ class RequirementsCheck
                     $missing_strtr = array('%n' => $n[0]);
                 } else {
                     foreach ($missing['l'] as $k => $v) {
-                        $l[] = '%l' . $k;
+                        $l[] = '%l'.$k;
                     }
                     $last = array_pop($l);
-                    $missing_strtr['%l'] = implode(', ', $l) . ' and ' . $last;
+                    $missing_strtr['%l'] = implode(', ', $l).' and '.$last;
                     $missing_strtr['%n'] = $n[1];
                 }
                 $message = strtr($message, $missing_strtr);
@@ -542,36 +551,37 @@ class RequirementsCheck
             }
         }
     }
+
     public function addMissing()
     {
         //$components, $links, $msgtpl
         $args = func_get_args();
         $placeholders = array();
         foreach (array('c', 'l') as $k => $v) {
-            $key = '%' . $v;
+            $key = '%'.$v;
             if (gettype($args[$k]) == 'string') {
                 $args[$k] = array($args[$k]);
             }
             if (gettype($args[$k]) == 'string' || count($args[$k]) == 1) {
-                $args[2] = str_replace($key, $key . '0', $args[2]);
+                $args[2] = str_replace($key, $key.'0', $args[2]);
             }
             if (is_array($args[$k])) {
                 foreach ($args[$k] as $k_ => $v_) {
                     if ($v == 'l') {
-                        $v_ = '<a href="' . $args[1][$k_] . '" target="_blank">' . $args[0][$k_] . '</a>';
+                        $v_ = '<a href="'.$args[1][$k_].'" target="_blank">'.$args[0][$k_].'</a>';
                     }
-                    $placeholders[$key . $k_] = $v_;
+                    $placeholders[$key.$k_] = $v_;
                 }
             }
         }
         $message = strtr($args[2], $placeholders);
         $this->missing[] = array(
             'components' => $args[0],
-            'message' => $message
+            'message' => $message,
         );
     }
 }
-$RequirementsCheck = new RequirementsCheck;
+$RequirementsCheck = new RequirementsCheck();
 
 class Output
 {
@@ -581,6 +591,7 @@ class Output
         $this->response = null;
         $this->request = $_REQUEST;
     }
+
     public function setHttpStatus($code)
     {
         $this->status = array(
@@ -588,23 +599,26 @@ class Output
             'description' => getHttpStatusDesc($code),
         );
     }
-    public function setResponse($message, $code=null)
+
+    public function setResponse($message, $code = null)
     {
         $this->response = array(
             'code' => $code,
             'message' => $message,
         );
     }
-    public function addData($prop, $var=null)
+
+    public function addData($prop, $var = null)
     {
         if (!isset($this->data)) {
-            $this->data = new stdClass;
+            $this->data = new stdClass();
         }
         if (is_array($var)) {
             // $var = json_encode($var, JSON_FORCE_OBJECT);
         }
         $this->data->{$prop} = $var;
     }
+
     public function exec()
     {
         error_reporting(0);
@@ -639,7 +653,7 @@ class Output
         if (is_int($this->status['code'])) {
             setHttpStatusCode($this->status['code']);
         }
-        print $this->data ? $json : json_encode($this, JSON_FORCE_OBJECT);
+        echo $this->data ? $json : json_encode($this, JSON_FORCE_OBJECT);
         die();
     }
 }
@@ -655,7 +669,7 @@ class processAction
             return;
         }
         $edition = $_REQUEST['edition'] ? Settings::get('editions')->{$_REQUEST['edition']} : null;
-        $Output = new Output;
+        $Output = new Output();
         try {
             switch ($action) {
                 case 'download':
@@ -663,15 +677,15 @@ class processAction
                         throw new Exception('Missing edition', 4000);
                     }
                     $zipball = $edition->zipball;
-                    $file_basename = 'chevereto-pkg-' . randomString(8) . '.zip';
-                    $file_path =  __ROOT_PATH__ . $file_basename;
+                    $file_basename = 'chevereto-pkg-'.randomString(8).'.zip';
+                    $file_path = __ROOT_PATH__.$file_basename;
                     if (file_exists($file_path)) {
                         @unlink($file_path);
                     }
                     $options = array(CURLOPT_USERAGENT => 'Chevereto web installer');
                     if ($_REQUEST['edition'] == 'paid') {
                         $options[CURLOPT_POST] = 1;
-                        $options[CURLOPT_POSTFIELDS] = 'license=' . $_REQUEST['license'];
+                        $options[CURLOPT_POSTFIELDS] = 'license='.$_REQUEST['license'];
                     }
                     $download = getUrlContent($zipball, $options);
                     $transfer = $download['transfer'];
@@ -686,7 +700,7 @@ class processAction
                         }
                     } else {
                         if (!@rename($download['tmp_file_path'], $file_basename)) {
-                            throw new Exception("Can't save downloaded file " . $file_path, 5001);
+                            throw new Exception("Can't save downloaded file ".$file_path, 5001);
                         }
                         @unlink($download['tmp_file_path']);
                         $file_size = filesize($file_path);
@@ -696,17 +710,17 @@ class processAction
                         $Output->setResponse(strtr('Downloaded %f (%w @%s)', array(
                             '%f' => $file_basename,
                             '%w' => formatBytes($file_size),
-                            '%s' => bytesToMb($transfer['speed_download']) . 'MB/s.'
+                            '%s' => bytesToMb($transfer['speed_download']).'MB/s.',
                         )));
                     }
                 break;
                 case 'extract':
-                    $file_path = __ROOT_PATH__ . $_REQUEST['fileBasename'];
+                    $file_path = __ROOT_PATH__.$_REQUEST['fileBasename'];
                     if (!is_readable($file_path)) {
                         throw new Exception(sprintf("Can't read %s", $_REQUEST['fileBasename']), 5002);
                     }
                     // Unzip .zip
-                    $ZipArchive = new ZipArchiveExt;
+                    $ZipArchive = new ZipArchiveExt();
                     $time_start = microtime(true);
                     $open = $ZipArchive->open($file_path);
                     if ($open === true) {
@@ -723,18 +737,18 @@ class processAction
                         // Also remove some free edition docs
                         if ($_REQUEST['edition'] == 'paid') {
                             foreach (array('AGPLv3', 'LICENSE', 'README.md') as $v) {
-                                @unlink(__ROOT_PATH__ . $v);
+                                @unlink(__ROOT_PATH__.$v);
                             }
                         }
                     } else {
                         throw new Exception(strtr("Can't extract %f - %m", array(
                             '%f' => $file_path,
-                            '%m' => 'ZipArchive ' . $open . ' error'
+                            '%m' => 'ZipArchive '.$open.' error',
                         )), 5003);
                     }
                     $Output->setResponse(strtr('Extraction completeted (%n files in %ss)', array(
                         '%n' => $num_files,
-                        '%s' => $time_taken
+                        '%s' => $time_taken,
                     )));
                     // My job here is done. My planet needs me.
                     if (__INSTALLER_FILE__ != 'index.php') {
@@ -755,7 +769,7 @@ class processAction
 
 if (isset($_REQUEST['action'])) {
     if ($RequirementsCheck->missing) {
-        $Output = new Output;
+        $Output = new Output();
         $missing = array();
         foreach ($RequirementsCheck->missing as $k => $v) {
             $missing[] = $v;
@@ -771,27 +785,27 @@ if (isset($_REQUEST['action'])) {
 $page = $RequirementsCheck->missing ? 'error' : 'install';
 
 if ($page == 'install' && !isset($_REQUEST['UpgradeToPaid']) && preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
-    $nginx = '<p>Make sure that you add the following rules to your <a href="https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts" target="_blank">nginx.conf</a> server block before installing:</p>
+    $nginx = '<p>To proceed, make sure that you add the following rules to your <a href="https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts" target="_blank">nginx.conf</a> server block.</p>
 <textarea class="pre" ondblclick="this.select()">#Chevereto: Disable access to sensitive files
-location ~* ' . __ROOT_PATH_RELATIVE__ . '(app|content|lib)/.*\.(po|php|lock|sql)$ {
+location ~* '.__ROOT_PATH_RELATIVE__.'(app|content|lib)/.*\.(po|php|lock|sql)$ {
 	deny all;
 }
 #Chevereto: CORS headers
-location ~* ' . __ROOT_PATH_RELATIVE__ . '.*\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js) {
+location ~* '.__ROOT_PATH_RELATIVE__.'.*\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js) {
 	add_header Access-Control-Allow-Origin "*";
 }
 #Chevereto: Upload path for image content only and set 404 replacement
-location ^~ ' . __ROOT_PATH_RELATIVE__ . 'images/ {
+location ^~ '.__ROOT_PATH_RELATIVE__.'images/ {
 	location ~* (jpe?g|png|gif) {
 		log_not_found off;
-		error_page 404 ' . __ROOT_PATH_RELATIVE__ . 'content/images/system/default/404.gif;
+		error_page 404 '.__ROOT_PATH_RELATIVE__.'content/images/system/default/404.gif;
 	}
 	return 403;
 }
 #Chevereto: Pretty URLs
-location ' . __ROOT_PATH_RELATIVE__ . ' {
+location '.__ROOT_PATH_RELATIVE__.' {
 	index index.php;
-	try_files $uri $uri/ ' . __ROOT_PATH_RELATIVE__ . 'index.php?$query_string;
+	try_files $uri $uri/ '.__ROOT_PATH_RELATIVE__.'index.php?$query_string;
 }</textarea>';
 }
 ?>
@@ -1395,8 +1409,8 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 			<div class="flex-box box--install col-16">
 				<div class="free--show">
 					<h1>Install Chevereto Free</h1>
-					<p>This installer will download and extract the latest <a href="https://chevereto.com/free" target="_blank">Chevereto Free</a> release in <code><?php echo __ROOT_PATH__; ?></code></p>
-					<p>Your installation will be upgradable to our paid edition at any time from your dashboard panel.</p>
+					<p>The installer will download and extract the latest <a href="https://chevereto.com/free" target="_blank">Chevereto Free</a> release in <code><?php echo __ROOT_PATH__; ?></code></p>
+					<p>This installation can be upgraded to our paid edition at any time from your dashboard panel.</p>
 					<?php
                         if ($nginx) {
                             echo $nginx;
@@ -1408,11 +1422,11 @@ location ' . __ROOT_PATH_RELATIVE__ . ' {
 				</div>
 				<div class="paid--show">
 					<h1>Install Chevereto</h1>
-					<p>This installer will download and extract the latest <a href="https://chevereto.com/" target="_blank">Chevereto</a> release in <code><?php echo __ROOT_PATH__; ?></code></p>
+					<p>The installer will download and extract the latest <a href="https://chevereto.com/" target="_blank">Chevereto</a> paid release in <code><?php echo __ROOT_PATH__; ?></code></p>
 					<?php
                         if (isset($_REQUEST['UpgradeToPaid'])) {
                             ?>
-					<p>All previous uploads won't get altered in any way.  The database schema will be upgraded. Backup your changes.</p>
+					<p>All previous uploads won't get altered in any way. The database schema will be upgraded. Backup your changes.</p>
 					<?php
                         } ?>
 					<?php
