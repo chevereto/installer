@@ -1,7 +1,7 @@
 Installer
 =
 
-<img src="https://chevereto.com/src/img/installer/screen.jpg?20171112">
+<a href="https://www.youtube.com/watch?v=TK0VzCh1qaM" title="View demostration (YouTube)"><img src="https://chevereto.com/src/img/installer/screen.jpg?20171112"></a>
 
 ## About this repo
 
