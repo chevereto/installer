@@ -102,8 +102,8 @@ define('__SERVER_REWRITE__', null);
 function randomString($length = 8)
 {
     switch (true) {
-        case function_exists('mcrypt_create_iv'):
-            $r = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        case function_exists('random_bytes'):
+            $r = random_bytes($length);
         break;
         case function_exists('openssl_random_pseudo_bytes'):
             $r = openssl_random_pseudo_bytes($length);
@@ -111,7 +111,7 @@ function randomString($length = 8)
         case is_readable('/dev/urandom'): // deceze
             $r = file_get_contents('/dev/urandom', false, null, 0, $length);
         break;
-        default: // Fallback
+        default:
             $i = 0;
             $r = '';
             while ($i++ < $length) {
