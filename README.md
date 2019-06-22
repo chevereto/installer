@@ -4,7 +4,7 @@
 
 ## Description
 
-A single `.php` file that installs Chevereto in a web server. It checks the system requirements and eases the whole installation process.
+A single `.php` file that installs Chevereto in a web server.
 
 - Checks for system requirements
 - Automatic database setup for cPanel based servers
