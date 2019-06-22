@@ -69,12 +69,12 @@ All responses are in JSON format and use HTTP status codes. Example:
 
 ```json
 {
-  code: 200,
-  message: "Downloaded chevereto-pkg-bbf9ab00.zip (4.4 MB @6.27MB/s.)"
-  data: {
-    download: {
-      fileBasename: "chevereto-pkg-bbf9ab00.zip",
-      filePath: "/var/www/html/chevereto.com/chevereto-pkg-bbf9ab00.zip"
+  "code": 200,
+  "message": "Downloaded chevereto-pkg-bbf9ab00.zip (4.4 MB @6.27MB/s.)",
+  "data": {
+    "download": {
+      "fileBasename": "chevereto-pkg-bbf9ab00.zip",
+      "filePath": "/var/www/html/chevereto.com/chevereto-pkg-bbf9ab00.zip"
     }
   }
 }
