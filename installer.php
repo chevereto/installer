@@ -4,7 +4,7 @@
     Chevereto Installer
     http://chevereto.com/
 
-    @version 2.0.0.beta.2
+    @version 2.0.0.beta.3
     @author	Rodolfo Berrios A. <http://rodolfoberrios.com/>
 
       /$$$$$$  /$$                                                           /$$
@@ -2223,23 +2223,31 @@ var installer = {
   fetchOnAlways: function(data) {
     installer.log(data.message);
   },
+  fetchCommonInit: function() {
+    this.log("Detecting existing cPanel .htaccess handlers");
+    return this
+      .fetch("cPanelHtaccessHandlers")
+      .then(json => {
+        installer.data.cPanelHtaccessHandlers = "data" in json ? json.data.handlers : null;
+      })
+      .then(json => {
+        installer.log("Downloading latest " + installer.data.software + " release");
+        return installer.fetch("download", {
+          software: installer.data.software,
+          license: installer.data.license
+        });
+      })
+      .then(json => {
+        installer.log("Extracting " + json.data.fileBasename);
+        return installer.fetch("extract", {
+          software: installer.data.software,
+          filePath: json.data.filePath,
+          workingPath: runtime.absPath,
+          appendHtaccess: installer.data.cPanelHtaccessHandlers,
+        });
+      });
+  },
   fillInstallDetails: function(data) {
-    // data.software = \'chevereto\';
-
-    // data.admin = {
-    //   email: \'adminemail\',
-    //   username: \'adminusername\',
-    //   password: \'adminpassword\'
-    // };
-      
-    // data.db = {
-    //   host: \'host\',
-    //   port: \'port\',
-    //   name: \'name\',
-    //   user: \'user\',
-    //   userPassword: \'userPassword\',
-    // };
-
     let text = "+===================================+" + "\\n" +
     "| Chevereto installation            |" + "\\n" +
     "+===================================+" + "\\n" +
@@ -2383,18 +2391,7 @@ var installer = {
         "Downloading latest " + installer.data.software + " release"
       );
       installer
-        .fetch("download", {
-          software: installer.data.software,
-          license: installer.data.license
-        })
-        .then(data => {
-          installer.log("Extracting " + data.data.fileBasename);
-          return installer.fetch("extract", {
-            software: installer.data.software,
-            filePath: data.data.filePath,
-            workingPath: runtime.absPath
-          });
-        })
+        .fetchCommonInit()
         .then(data => {
           installer.log(
             "Removing installer file at " + runtime.installerFilepath
@@ -2425,30 +2422,8 @@ var installer = {
       installer.setBodyInstalling(true);
       this.show("installing");
 
-      installer.log("Detecting existing cPanel .htaccess handlers");
       installer
-        .fetch("cPanelHtaccessHandlers")
-        .then(json => {
-          installer.data.cPanelHtaccessHandlers = "data" in json ? json.data.handlers : null;
-        })
-        .then(data => {
-          installer.log(
-            "Downloading latest " + installer.data.software + " release"
-          );
-          return installer.fetch("download", {
-            software: installer.data.software,
-            license: installer.data.license
-          })
-        })
-        .then(data => {
-          installer.log("Extracting " + data.data.fileBasename);
-          return installer.fetch("extract", {
-            software: installer.data.software,
-            filePath: data.data.filePath,
-            workingPath: runtime.absPath,
-            appendHtaccess: installer.data.cPanelHtaccessHandlers,
-          });
-        })
+        .fetchCommonInit()
         .then(data => {
           installer.log("Creating app/settings.php file");
           let = params = Object.assign({filePath: runtime.absPath + "app/settings.php"}, installer.data.db)
@@ -2840,7 +2815,7 @@ if (preg_match('/nginx/i', $runtime->serverSoftware)) { ?>
       <div class="flex-box col-width">
         <div>
           <h1>Upgrade prepared</h1>
-          <p>TThe system files have been upgraded. You can now install the upgrade which will perform the database changes needed and complete the process.</p>
+          <p>The system files have been upgraded. You can now install the upgrade which will perform the database changes needed and complete the process.</p>
           <p class="alert">The installer has self-removed its file at <code><?php echo INSTALLER_FILEPATH; ?></code></p>     
           <div>
             <a class="button action radius" href="<?php echo $runtime->rootUrl; ?>install">Install upgrade</a>
