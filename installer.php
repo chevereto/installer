@@ -1013,9 +1013,15 @@ class Controller
 
     public function cPanelHtaccessHandlersAction(array $params)
     {
+        $filePath = $this->runtime->absPath.'.htaccess';
+        if (!@is_readable($filePath)) {
+            $this->code = 404;
+            $this->response = 'No .htaccess found';
+
+            return;
+        }
         try {
-            $handlers = Cpanel::getHtaccessHandlers($this->runtime->absPath.'.htaccess');
-            if ($handlers) {
+            if ($handlers = Cpanel::getHtaccessHandlers($filePath)) {
                 $this->code = 200;
                 $this->response = 'cPanel .htaccess handlers found';
                 $this->data['handlers'] = trim($handlers);
@@ -2190,9 +2196,6 @@ var installer = {
           if ("success" in callback) {
             callbackRes = callback.success(data);
           }
-          return new Promise(function(resolve, reject) {
-            resolve(data);
-          });
         } else {
           callbackRes = callback.error(data);
           if(true !== callbackRes) {
@@ -2201,6 +2204,11 @@ var installer = {
               reject(data);
             });
           }
+        }
+        if(200 == data.code || true == callbackRes) {
+          return new Promise(function(resolve, reject) {
+            resolve(data);
+          });
         }
       });
   },
@@ -2226,9 +2234,13 @@ var installer = {
   fetchCommonInit: function() {
     this.log("Detecting existing cPanel .htaccess handlers");
     return this
-      .fetch("cPanelHtaccessHandlers")
+      .fetch("cPanelHtaccessHandlers", null, {
+        error: function() {
+          return true;
+        }
+      })
       .then(json => {
-        installer.data.cPanelHtaccessHandlers = "data" in json ? json.data.handlers : null;
+        installer.data.cPanelHtaccessHandlers = "data" in json ? json.data.handlers : "";
       })
       .then(json => {
         installer.log("Downloading latest " + installer.data.software + " release");
@@ -2366,7 +2378,6 @@ var installer = {
           installer.actions.show("admin");
         },
         error: function(response, json) {
-          console.error("error", response, json);
         }
       });
     },
