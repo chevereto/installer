@@ -24,6 +24,10 @@ A single `.php` file that installs Chevereto in a web server.
 1. Upload the `installer.php` file to your target `public_html` folder.
 2. Open your website and follow the steps.
 
+## Issues and pull requests
+
+If the installer doesn't work as expected you can open a new issue an report the problem. Must provide details, logs and full server specs. Any issue without a detailed case will be deleted so try to ask like you really want that other human being help you with this.
+
 ## API
 
 All functions can be accessed programmatically. The API actions bind from methods defined in the `Controller` class.
