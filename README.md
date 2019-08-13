@@ -26,7 +26,7 @@ A single `.php` file that installs Chevereto in a web server.
 
 ## Issues and pull requests
 
-If the installer doesn't work as expected you can open a new issue an report the problem. Must provide details, logs and full server specs. Any issue without a detailed case will be deleted so try to ask like you really want that other human being help you with this.
+If the installer doesn't work as expected you can open a new issue and report the problem. You must provide details, logs and full server specs. Any issue without a detailed case will be deleted so try to ask like you really want that other human being help you with this.
 
 ## API
 
