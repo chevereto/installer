@@ -16,8 +16,8 @@ A single `.php` file that installs Chevereto in a web server.
 ## Requirements
 
 - PHP 7
-- MySQL 8 / MariaDB 10
-- Apache (`mod_rewrite`) / Nginx
+- MySQL 8 (5.6 min) / MariaDB 10
+- Apache (with `mod_rewrite`) / Nginx
 
 ## How to use it
 
