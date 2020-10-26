@@ -2953,7 +2953,7 @@ if ("error" != document.querySelector("html").id) {
         <h1>Ready to install</h1>
         <p>The installer is ready to download and install the latest <span class="chevereto-free--hide">Chevereto</span><span class="chevereto--hide">Chevereto-Free</span> release in <code><?php echo $runtime->absPath; ?></code></p>
         <p class="highlight chevereto-free--hide">By installing is understood that you accept the <a href="https://chevereto.com/license" target="_blank">Chevereto EULA</a>.</p>
-        <p class="highlight chevereto--hide">By installing is understood that you accept the Chevereto-Free <a href="<?php echo APPLICATIONS['chevereto-free']['url'] . '/blob/master/LICENSE'; ?>" target="_blank">AGPLv3 license</a>.</p>
+        <p class="highlight chevereto--hide">By installing is understood that you accept the Chevereto-Free <a href="<?php echo APPLICATIONS['chevereto-free']['url'] . '/blob/master/LICENSE'; ?>" target="_blank">MIT license</a>.</p>
         <div>
           <button class="action radius" data-action="install">Install <span class="chevereto-free--hide">Chevereto</span><span class="chevereto--hide">Chevereto-Free</span></button>
         </div>
