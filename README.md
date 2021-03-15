@@ -1,11 +1,18 @@
 # Installer
 
+> 🔔 [Subscribe](https://newsletter.chevereto.com/subscription?f=PmL892XuTdfErVq763PCycJQrvZ8PYc9JbsVUttqiPV1zXt6DDtf7lhepEStqE8LhGs8922ZYmGT7CYjMH5uSx23pL6Q) to don't miss any update regarding Chevereto.
+
+![Chevereto](LOGO.svg)
+
+[![Discord](https://img.shields.io/discord/759137550312407050?style=flat-square)](https://chv.to/discord)
+
 <img src="https://chevereto.com/src/img/installer/screen-v2.png?20190623" style="max-height: 600px;">
 
 ## Description
 
-A single `.php` file that installs Chevereto in a web server.
+A single `.php` file that installs Chevereto using PHP.
 
+- HTTP / CLI API
 - Checks for system requirements
 - Automatic database setup for cPanel based servers
 - Database checks
@@ -15,50 +22,27 @@ A single `.php` file that installs Chevereto in a web server.
 
 ## Requirements
 
-- PHP 7.2
-- MySQL 8 (5.6 min) / MariaDB 10
-- Apache (with `mod_rewrite`) / Nginx
+- PHP 7.4
+- MariaDB 10
+- Apache (with `mod_rewrite`) / Nginx (for HTTP API)
 
 ## How to use it
 
 1. Upload the `installer.php` file to your target `public_html` folder.
-2. Open your website and follow the steps.
+2. HTTP API: Open your website and follow the steps.
+3. CLI API: `php installer.php [options]`
 
-## Issues and pull requests
+## APIs
 
-If the installer doesn't work as expected you can open a new issue and report the problem. You must provide details, logs and full server specs. Any issue without a detailed case will be deleted so try to ask like you really want that other human being help you with this.
+All functions can be accessed programmatically. Note that HTTP parameters bind to one-char command options for CLI API.
 
-## API
-
-All functions can be accessed programmatically. The API actions bind from methods defined in the `Controller` class.
-
-| Action            | Parameters (string)                                                               | Description                                                                 |
-| ----------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| checkLicense      | license                                                                           | Checks Chevereto license                                                    |
-| checkDatabase     | host, port, name, user, userPassword                                              | Checks database credentials and privileges                                  |
-| cPanelProcess     | user, password                                                                    | Creates a database, database user and grant privileges (cPanel credentials) |
-| download          | software\*, license                                                               | Download the target software, license needed for software=`chevereto`       |
-| extract           | software\*, workingPath, filePath                                                 | Extract the downloaded software file (filePath) in the target working path  |
-| createSettings    | host, port, name, user, userPassword                                              | Generates `app/settings.php` containing the database details                |
-| submitInstallForm | username, email, password, email_from_email, email_incoming_email, website_mode\* | Submits the installation form at `/install`                                 |
-| selfDestruct      |                                                                                   | Self-remove the `installer.php` file                                        |
-
-- \*Software: `chevereto`, `chevereto-free`
-- \*website_mode: `community`, `personal`
-
-### Requests
-
-All requests must be made using HTTP POST to the installer file and must include the `action` parameter.
-
-Example:
+### HTTP API
 
 ```text
 POST /installer.php HTTP/1.1
 Host: localhost
 Content-Type: multipart/form-data
 ```
-
-Parameters:
 
 ```js
 {
@@ -67,9 +51,116 @@ Parameters:
 }
 ```
 
+### CLI API
+
+```sh
+php installer.php -a checkLicense -l LicenseKeyToCheck
+```
+
+## API Actions
+
+### checkLicense
+
+Checks Chevereto license (paid edition).
+
+Parameters:
+
+| HTTP    | CLI |
+| ------- | --- |
+| license | l   |
+
+### checkDatabase
+
+Checks database credentials and privileges.
+
+Parameters (database credentials):
+
+| HTTP         | CLI |
+| ------------ | --- |
+| host         | h   |
+| port         | p   |
+| name         | n   |
+| user         | u   |
+| userPassword | x   |
+
+### cPanelProcess
+
+Creates a database, database user and grant privileges.
+
+Parameters (cPanel credentials):
+
+| HTTP     | CLI |
+| -------- | --- |
+| user     | u   |
+| password | x   |
+
+### download
+
+Download the target software.
+
+Parameters (license is optional, needed for software=`chevereto`):
+
+| HTTP     | CLI |
+| -------- | --- |
+| software | s   |
+| license  | l   |
+
+Note: When using CLI pass `l=key`.
+
+- Software: `chevereto`, `chevereto-free`
+
+### extract
+
+Extract the downloaded software file (filePath) in the target working path (absolute paths).
+
+Parameters:
+
+| HTTP        | CLI |
+| ----------- | --- |
+| software    | s   |
+| workingPath | p   |
+| filePath    | f   |
+
+- Software: `chevereto`, `chevereto-free`
+
+## createSettings
+
+Generates `app/settings.php` containing the database details.
+
+| HTTP         | CLI |
+| ------------ | --- |
+| host         | h   |
+| port         | p   |
+| name         | n   |
+| user         | u   |
+| userPassword | x   |
+
+## submitInstallForm
+
+Submits the installation form at `/install`.
+
+Parameters:
+
+| HTTP                 | CLI |
+| -------------------- | --- |
+| username             | u   |
+| email                | e   |
+| password             | x   |
+| email_from_email     | f   |
+| email_incoming_email | i   |
+| website_mode         | m   |
+
+- website_mode: `community`, `personal`
+
+## selfDestruct
+
+Self-remove the `installer.php` file and `installer.error.log`.
+
+No parameters required.
+
 ### Response
 
-All responses are in JSON format and use HTTP status codes. Example:
+All responses are in JSON format and use HTTP status codes:
 
 ```json
 {

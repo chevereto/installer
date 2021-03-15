@@ -19,21 +19,17 @@
 
 declare(strict_types=1);
 
-/* --- Begins: Dev editable --- */
 const APP_NAME = 'Chevereto Installer';
-const APP_VERSION = '2.0.1';
+const APP_VERSION = '2.1.0';
 const APP_URL = 'https://github.com/chevereto/installer';
-
-const PHP_VERSION_MIN = '7.2';
+const PHP_VERSION_MIN = '7.3';
 const PHP_VERSION_RECOMMENDED = '7.4';
-
 const VENDOR = [
     'name' => 'Chevereto',
     'url' => 'https://chevereto.com',
     'apiUrl' => 'https://chevereto.com/api',
     'apiLicense' => 'https://chevereto.com/api/license/check',
 ];
-
 const APPLICATIONS = [
     'chevereto' => [
         'name' => 'Chevereto',
@@ -52,13 +48,11 @@ const APPLICATIONS = [
         'vendor' => VENDOR,
     ],
 ];
-
 $patterns = [
     'username_pattern' => '^[\w]{3,16}$',
     'user_password_pattern' => '^.{6,128}$',
     'email_pattern' => "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$",
 ];
-
 $phpSettings = [
     'error_reporting' => E_ALL ^ E_NOTICE,
     'log_errors' => true,
@@ -68,7 +62,6 @@ $phpSettings = [
     'default_charset' => 'utf-8',
     'LC_ALL' => 'en_US.UTF8',
 ];
-
 $phpExtensions = [
     'curl',
     'hash',
@@ -78,7 +71,6 @@ $phpExtensions = [
     'PDO_MYSQL',
     'session',
 ];
-
 $phpClasses = [
     'DateTime',
     'DirectoryIterator',
@@ -89,17 +81,11 @@ $phpClasses = [
     'RecursiveIteratorIterator',
     'ZipArchive',
 ];
-
 $themeColor = '#ecf0f1';
-
 /** @var string a base64 image */
 $shortcutIcon = 'data:image/png;base64,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';
-
-/* --- Ends: Dev editable --- */
-
 define('ERROR_LOG_FILEPATH', $phpSettings['error_log']);
 const INSTALLER_FILEPATH = __FILE__;
-
 function password(int $length)
 {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?';
@@ -146,92 +132,192 @@ function createPath(string $path): string
     }
     return $path;
 }
-const ERROR_TABLE = [
-    E_ERROR => 'Fatal error',
-    E_WARNING => 'Warning',
-    E_PARSE => 'Parse error',
-    E_NOTICE => 'Notice',
-    E_CORE_ERROR => 'Core error',
-    E_CORE_WARNING => 'Core warning',
-    E_COMPILE_ERROR => 'Compile error',
-    E_COMPILE_WARNING => 'Compile warning',
-    E_USER_ERROR => 'Fatal error',
-    E_USER_WARNING => 'Warning',
-    E_USER_NOTICE => 'Notice',
-    E_STRICT => 'Strict standars',
-    E_RECOVERABLE_ERROR => 'Recoverable error',
-    E_DEPRECATED => 'Deprecated',
-    E_USER_DEPRECATED => 'Deprecated',
-];
 
+function logger(string $message)
+{
+    if(PHP_SAPI !== 'cli') {
+        return;
+    }
+    fwrite(fopen('php://stdout', 'r+'), $message);
+}
+
+function progressCallback($resource, $download_size = 0, $downloaded = 0, $upload_size = 0, $uploaded = 0)
+{
+    if($download_size == 0) {
+        return;
+    }
+    logger(progress_bar($downloaded, $download_size, ' download'));
+}
+
+function progress_bar($done, $total, $info="", $width=50) {
+    $perc = (int) round(($done * 100) / $total);
+    $bar = (int) round(($width * $perc) / 100);
+    return sprintf("  %s%%[%s>%s]%s\r", $perc, str_repeat("=", $bar), str_repeat(" ", $width-$bar), $info);
+}
+
+function set_status_header($code)
+{
+    if(headers_sent()) {
+        return;
+    }
+    $desc = get_set_status_header_desc($code);
+    if (empty($desc)) {
+        return false;
+    }
+    $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
+    if ('HTTP/1.1' != $protocol && 'HTTP/1.0' != $protocol) {
+        $protocol = 'HTTP/1.0';
+    }
+    $set_status_header = "$protocol $code $desc";
+    header($set_status_header, true, $code);
+}
+
+function get_set_status_header_desc($code)
+{
+    $codes_to_desc = array(
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        102 => 'Processing',
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        207 => 'Multi-Status',
+        226 => 'IM Used',
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Found',
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        306 => 'Reserved',
+        307 => 'Temporary Redirect',
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Request Entity Too Large',
+        414 => 'Request-URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Requested Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        422 => 'Unprocessable Entity',
+        423 => 'Locked',
+        424 => 'Failed Dependency',
+        426 => 'Upgrade Required',
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        506 => 'Variant Also Negotiates',
+        507 => 'Insufficient Storage',
+        510 => 'Not Extended',
+    );
+
+    return $codes_to_desc[$code] ?? 'n/a';
+}
+
+function writeToStderr(string $message) {
+    fwrite(fopen('php://stderr', 'wb'), $message . "\n");
+}
+
+function isDocker(): bool {
+    return ($_ENV['CHEVERETO_SERVICING'] ?? null) == 'docker';
+}
 set_error_handler(function (int $severity, string $message, string $file, int $line) {
     throw new ErrorException($message, 0, $severity, $file, $line);
 }, $phpSettings['error_reporting']);
 
 set_exception_handler(function (Throwable $e) {
-    $trace = $e->getTrace();
-    $traceTemplate = "#%k% %file%:%line%\n%class%%type%%function%%args%";
-    $argsTemplate = "Arg#%k%\n%arg%";
-
-    switch (true) {
-        case $e instanceof ErrorException:
-            $type = ERROR_TABLE[$e->getSeverity()];
-            $thrown = $e->getMessage();
-
-            array_shift($trace);
-            array_shift($trace);
-            break;
-        case $e instanceof Error:
-            $type = 'PHP';
-            $thrown = $e->getMessage();
-            break;
-        default:
-            $type = 'Exception';
-            $thrown = $type . ' thrown';
-            break;
-    }
-    $message = 'in ' . $e->getFile() . ':' . $e->getLine();
-    $retrace = [];
-    foreach ($trace as $k => $v) {
-        $args = [];
-        foreach ($v['args'] as $ak => $av) {
-            $arg = var_export($av, true);
-            $args[] = strtr($argsTemplate, [
-                '%k%' => $ak,
-                '%arg%' => $arg,
-            ]);
-        }
-        $retrace[] = strtr($traceTemplate, [
-            '%k%' => $k,
-            '%file%' => $v['file'] ?? '',
-            '%line%' => $v['line'] ?? '',
-            '%class%' => $v['class'] ?? '',
-            '%type%' => $v['type'] ?? '',
-            '%function%' => $v['function'] ?? '',
-            '%args%' => empty($args) ? '' : ("\n--\n" . implode("\n--\n", $args)),
-        ]);
-    }
-    $cols = 80;
-    $hypens = str_repeat('-', $cols);
-    $halfHypens = substr($hypens, 0, $cols / 2);
-    $stack = implode("\n$halfHypens\n", $retrace);
-    $tags = [
-        '%type%' => $type,
-        '%datetime%' => date('Y-m-d H:i:s'),
-        '%thrown%' => $thrown,
-        '%message%' => $message,
-        '%stack%' => $stack,
-        '%trace%' => empty($retrace) ? '' : "Trace:\n"
+    $device = isDocker() ? 'stderr' : 'error_log';
+    $debug_level = 3;
+    $internal_code = 500;
+    $internal_error = '<b>Aw, snap!</b>';
+    $table = [
+        0 => "debug is disabled",
+        1 => "debug @ $device",
+        2 => "debug @ print",
+        3 => "debug @ print,$device",
     ];
-    $screenTpl = '<h1>[%type%] %thrown%</h1><p>%message%</p>' . "\n\n" . "%trace%<pre><code>%stack%</code></pre>";
-    $textTpl = "%datetime% [%type%] %thrown%: %message%\n\n%trace%%stack%";
+    $internal_error .= ' [' . $table[$debug_level] . '] - https://v3-docs.chevereto.com/setup/debug.html';
+    $message = [$internal_error];
+    $message[] = '';
+    $message[] = '<b>Fatal error [' . $e->getCode() . ']:</b> ' . strip_tags($e->getMessage());
+    $message[] = 'Triggered in ' . $e->getFile() . ':' . $e->getLine() . "\n";
+    $message[] = '<b>Stack trace:</b>';
+    $rtn = '';
+    $count = 0;
+    foreach ($e->getTrace() as $frame) {
+        $args = '';
+        if (isset($frame['args'])) {
+            $args = array();
+            foreach ($frame['args'] as $arg) {
+                switch (true) {
+                    case is_string($arg):
+                        $args[] = "'" . $arg . "'";
+                        break;
+                    case is_array($arg):
+                        $args[] = 'Array';
+                        break;
+                    case is_null($arg):
+                        $args[] = 'NULL';
+                        break;
+                    case is_bool($arg):
+                        $args[] = ($arg) ? 'true' : 'false';
+                        break;
+                    case is_object($arg):
+                        $args[] = get_class($arg);
+                        break;
+                    case is_resource($arg):
+                        $args[] = get_resource_type($arg);
+                        break;
+                    default:
+                        $args[] = $arg;
+                        break;
+                }
+            }
+            $args = join(', ', $args);
+        }
+        $rtn .= sprintf(
+            "#%s %s(%s): %s(%s)\n",
+            $count,
+            $frame['file'] ?? 'unknown file',
+            $frame['line'] ?? 'unknown line',
+            (isset($frame['class'])) ? $frame['class'] . $frame['type'] . $frame['function'] : $frame['function'],
+            $args
+        );
+        ++$count;
+    }
+    $message[] = $rtn;
+    $message = implode("\n", $message);
+    $newLines = nl2br($message);
+    $plainLines = "\n" . strip_tags($newLines);
+    set_status_header($internal_code);
+    if(in_array($debug_level, [2, 3])) {
+        echo PHP_SAPI !== 'cli'  ? $newLines : $plainLines;
+    }
+    if(in_array($debug_level, [1, 3]) && $device === 'error_log') {
+        error_log($plainLines);
+    }
+    if(isDocker()) {
+        writeToStderr($plainLines);
+    }
 
-    $text = "$hypens\n" . strtr($textTpl, $tags) . "\n$hypens\n\n";
-
-    append(ERROR_LOG_FILEPATH, $text);
-
-    echo strtr($screenTpl, $tags);
-    die();
+    die(255);
 });
 class Logger
 {
@@ -264,7 +350,6 @@ class ZipArchiveExt extends ZipArchive
         }
         $inputSubdir = $subdir;
         $subdir = rtrim($subdir, '/') . '/';
-        // Extract files
         $folderExists = false;
         for ($i = 0; $i < $this->numFiles; ++$i) {
             $filename = $this->getNameIndex($i);
@@ -343,7 +428,7 @@ class RequirementsCheck
     /** @var array Error messages */
     public $errors;
 
-    /** @var array Missed compontents array used for internal awareness */
+    /** @var array Missed components array used for internal awareness */
     public $missed;
 
     /** @var array Maps PHP extension name to its documentation identifier */
@@ -375,10 +460,7 @@ class RequirementsCheck
         $this->errors = array();
         $this->checkPHPVersion($requirements->phpVersions);
         $this->checkPHPProfile($requirements->phpExtensions, $requirements->phpClasses);
-        $this->checkTimezone();
-        $this->checkSessions();
         $this->checkWorkingPaths($runtime->workingPaths);
-        $this->checkImageLibrary();
         $this->checkFileUploads();
         $this->checkApacheModRewrite();
         $this->checkUtf8Functions();
@@ -450,38 +532,6 @@ class RequirementsCheck
         }
     }
 
-    public function checkTimezone()
-    {
-        if (function_exists('date_default_timezone_get')) {
-            $tz = @date_default_timezone_get();
-            $dtz = @date_default_timezone_set($tz);
-            if (!$dtz && !@date_default_timezone_set('America/Santiago')) {
-                $this->addBundleMissing(array('timezone', 'date.timezone'), array('http://php.net/manual/en/timezones.php', 'http://php.net/manual/en/datetime.configuration.php#ini.date.timezone'), '<b>' . $tz . '</b> is not a valid %l0 identifier in %l1');
-            }
-        }
-    }
-
-    public function checkSessions()
-    {
-        $session_link = 'http://php.net/manual/en/book.session.php';
-        if (session_status() == PHP_SESSION_DISABLED) {
-            $this->addMissing('sessions', $session_link, 'Enable %l support (session_start)');
-        }
-        $session_save_path = @realpath(@session_save_path());
-        if ($session_save_path) {
-            if (!is_writable($session_save_path)) {
-                $session_errors[] = $k;
-            }
-            if (isset($session_errors)) {
-                $this->addBundleMissing(array('session', 'session.save_path'), array($session_link, 'http://php.net/manual/en/session.configuration.php#ini.session.save-path'), str_replace('%s', implode('/', $session_errors), 'Missing PHP <b>%s</b> permission in <b>' . $session_save_path . '</b> (%l1)'));
-            }
-        }
-        $_SESSION['chevereto-installer'] = true;
-        if (!$_SESSION['chevereto-installer']) {
-            $this->addMissing('sessions', $session_link, 'Any server setting related to %l support (%c are not working)');
-        }
-    }
-
     public function checkWorkingPaths(array $workingPaths)
     {
         $rw_fn = array('read' => 'is_readable', 'write' => 'is_writeable');
@@ -497,19 +547,6 @@ class RequirementsCheck
                 $message = "PHP don't have  %l permission in <code>" . $var . '</code>';
                 $this->addMissing($error, 'https://unix.stackexchange.com/questions/35711/giving-php-permission-to-write-to-files-and-folders', $message);
                 unset($permissions_errors);
-            }
-        }
-    }
-
-    public function checkImageLibrary()
-    {
-        if (!@extension_loaded('gd') && !function_exists('gd_info')) {
-            $this->addMissing('GD Library', 'http://php.net/manual/en/book.image.php', 'Enable %l');
-        } else {
-            foreach (array('PNG', 'GIF', 'JPG', 'WBMP') as $k => $v) {
-                if (!imagetypes() & constant('IMG_' . $v)) {
-                    $this->addMissing('GD Library', 'http://php.net/manual/en/book.image.php', 'Enable %l ' . $v . ' image support');
-                }
             }
         }
     }
@@ -694,8 +731,8 @@ class Runtime
         $this->relPath = rtrim(dirname($this->server['SCRIPT_NAME']), '\/') . '/';
         $this->installerFilename = basename(INSTALLER_FILEPATH);
         $this->installerFilepath = INSTALLER_FILEPATH;
-        $this->httpHost = $this->server['HTTP_HOST'];
-        $this->serverSoftware = $this->server['SERVER_SOFTWARE'];
+        $this->httpHost = $this->server['HTTP_HOST'] ?? 'n/a';
+        $this->serverSoftware = $this->server['SERVER_SOFTWARE'] ?? 'n/a';
         $httpProtocol = 'http';
         $isHttpsOn = !empty($this->server['HTTPS']) && strtolower($this->server['HTTPS']) == 'on';
         $isHttpsX = isset($this->server['HTTP_X_FORWARDED_PROTO']) && $this->server['HTTP_X_FORWARDED_PROTO'] == 'https';
@@ -876,8 +913,8 @@ class Cpanel
     {
         $contents = file_get_contents($filepath);
         preg_match_all('/# php -- BEGIN cPanel-generated handler, do not edit[\s\S]+# php -- END cPanel-generated handler, do not edit/', $contents, $matches);
-        if ($matches) {
-            return $matches[0][0];
+        if (!empty($matches)) {
+            return $matches[0][0] ?? null;
         }
     }
 
@@ -902,6 +939,8 @@ class JsonResponse
 
     /** @var string */
     public $message;
+
+    public $data;
 
     const HTTP_CODES = [
         100 => 'Continue',
@@ -957,6 +996,11 @@ class JsonResponse
         510 => 'Not Extended',
     ];
 
+    public function __construct()
+    {
+        $this->data = new stdClass();
+    }
+
     public function setResponse(string $message, $httpCode = 200)
     {
         $this->code = $httpCode;
@@ -983,13 +1027,10 @@ class JsonResponse
 
     public function addData($key, $var = null)
     {
-        if (!isset($this->data)) {
-            $this->data = new stdClass();
-        }
         $this->data->{$key} = $var;
     }
 
-    public function send()
+    public function send(int $exitCode)
     {
         // if (headers_sent()) {
         //     throw new Exception('Headers have been already sent.');
@@ -1011,7 +1052,10 @@ class JsonResponse
             $this->setStatusCode($this->code);
         }
         echo isset($this->data) ? $json : json_encode($this, JSON_FORCE_OBJECT);
-        die();
+        if(PHP_SAPI === 'cli') {
+            echo "\n";
+        }
+        die($exitCode);
     }
 }
 class Database
@@ -1117,25 +1161,28 @@ class Controller
     public function __construct(array $params, Runtime $runtime)
     {
         $this->runtime = $runtime;
-        if (!$params['action']) {
+        if (!isset($params['action'])) {
             throw new Exception('Missing action parameter', 400);
         }
         $this->params = $params;
-        $method = $params['action'] . 'Action';
+        $method = $this->params['action'] . 'Action';
         if (!method_exists($this, $method)) {
-            throw new Exception('Invalid action ' . $params['action'], 400);
+            throw new Exception('Invalid action ' . $this->params['action'], 400);
         }
         $this->{$method}($this->params);
     }
 
     public function checkLicenseAction(array $params)
     {
+        if(!isset($params['license'])) {
+            throw new InvalidArgumentException('Missing license parameter');
+        }
         $post = $this->curl(VENDOR['apiLicense'], [
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => http_build_query(['license' => $params['license']]),
         ]);
-        if ($post->json->error) {
-            throw new Exception($post->json->error->message, 403);
+        if (isset($post->json->error)) {
+            throw new Exception($post->raw, 403);
         }
         $this->response = 200 == $this->code ? 'Valid license key' : 'Unable to check license';
     }
@@ -1167,9 +1214,6 @@ class Controller
             $this->code = 200;
             $this->response = 'cPanel process completed';
             $this->data['db'] = $createDb;
-            // [name] =>
-            // [user] =>
-            // [user_password] =>
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), 503);
         }
@@ -1184,30 +1228,30 @@ class Controller
 
             return;
         }
-        try {
-            if ($handlers = Cpanel::getHtaccessHandlers($filePath)) {
-                $this->code = 200;
-                $this->response = 'cPanel .htaccess handlers found';
-                $this->data['handlers'] = trim($handlers);
-            } else {
-                $this->code = 404;
-                $this->response = 'No cPanel .htaccess handlers found';
-            }
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 503);
+        $handlers = Cpanel::getHtaccessHandlers($filePath);
+        if (isset($handlers)) {
+            $this->code = 200;
+            $this->response = 'cPanel .htaccess handlers found';
+            $this->data['handlers'] = trim($handlers);
+        } else {
+            $this->code = 404;
+            $this->response = 'No cPanel .htaccess handlers found';
         }
     }
 
     public function downloadAction(array $params)
     {
+        if(!isset($params['software'])) {
+            throw new InvalidArgumentException('Missing software');
+        }
         $fileBasename = 'chevereto-pkg-' . substr(bin2hex(random_bytes(8)), 0, 8) . '.zip';
         $filePath = $this->runtime->absPath . $fileBasename;
         if (file_exists($filePath)) {
             @unlink($filePath);
         }
         $isPost = false;
-        $zipball = APPLICATIONS[$params['software']]['zipball'];
-        if (!$zipball) {
+        $zipball = APPLICATIONS[$params['software']]['zipball'] ?? null;
+        if (!isset($zipball)) {
             throw new Exception('Invalid software parameter', 400);
         }
         if ($params['software'] == 'chevereto') {
@@ -1215,16 +1259,19 @@ class Controller
         } else {
             $params = null;
             $get = $this->curl($zipball);
+            if(!isset($get->json->zipball_url)) {
+                throw new RuntimeException('No zipball for ' . $params['software']);
+            }
             $zipball = $get->json->zipball_url;
         }
         $curl = $this->downloadFile($zipball, $params, $filePath, $isPost);
         // Default chevereto.com API handling
-        if ($curl->json->error) {
-            throw new Exception($curl->json->error->message, $curl->json->status_code);
+        if (isset($curl->json->error)) {
+            throw new RuntimeException($curl->json->error->message, $curl->json->status_code);
         }
         // Everybody else
         if (200 != $curl->transfer['http_code']) {
-            throw new Exception('[HTTP ' . $curl->transfer['http_code'] . '] ' . $zipball, $curl->transfer['http_code']);
+            throw new RuntimeException('[HTTP ' . $curl->transfer['http_code'] . '] ' . $zipball, $curl->transfer['http_code']);
         }
         $fileSize = filesize($filePath);
         $this->response = strtr('Downloaded %f (%w @%s)', array(
@@ -1238,7 +1285,7 @@ class Controller
 
     public function extractAction(array $params)
     {
-        if (!$params['software']) {
+        if (!isset($params['software'])) {
             throw new Exception('Missing software parameter', 400);
         } elseif (!isset(APPLICATIONS[$params['software']])) {
             throw new Exception(sprintf('Unknown software %s', $params['software']), 400);
@@ -1246,7 +1293,7 @@ class Controller
 
         $software = APPLICATIONS[$params['software']];
 
-        if (!$params['workingPath']) {
+        if (!isset($params['workingPath'])) {
             throw new Exception('Missing workingPath parameter', 400);
         }
         $workingPath = $params['workingPath'];
@@ -1286,16 +1333,18 @@ class Controller
         @unlink($filePath);
 
         $htaccessFiepath = $workingPath . '.htaccess';
-        if ($params['appendHtaccess'] && file_exists($htaccessFiepath)) {
+        if (!empty($params['appendHtaccess']) && file_exists($htaccessFiepath)) {
             file_put_contents($htaccessFiepath, "\n\n" . $params['appendHtaccess'], FILE_APPEND | LOCK_EX);
         }
-
         $this->code = 200;
         $this->response = strtr('Extraction completeted (%n files in %ss)', ['%n' => $numFiles, '%s' => $timeTaken]);
     }
 
     public function createSettingsAction(array $params)
     {
+        if(!isset($params['filePath'])) {
+            throw new InvalidArgumentException('Missing filePath');
+        }
         $settings = [];
         foreach ($params as $k => $v) {
             $settings["%$k%"] = $v;
@@ -1318,15 +1367,25 @@ class Controller
 
     public function submitInstallFormAction(array $params)
     {
-        $installUrl = $this->runtime->rootUrl . 'install';
-        if (0 === strpos($this->runtime->server['SERVER_SOFTWARE'], 'PHP')) {
-            throw new Exception('Unable to submit the installation form under PHP development server. Go to ' . $installUrl . ' to complete the process.', 501);
+        $missing = [];
+        foreach(['username', 'email', 'password', 'email_from_email', 'email_incoming_email', 'website_mode'] as $param) {
+            if(!isset($params[$param])) {
+                $missing[] = $param;
+            }
         }
+        if($missing !== []) {
+            throw new InvalidArgumentException(sprintf('Missing %s', implode(', ', $missing)));
+        }
+        $installUrl = $this->runtime->rootUrl;
+        if(isDocker()) {
+            $installUrl = 'http://localhost/';
+        }
+        $installUrl .= 'install';
         $post = $this->curl($installUrl, [
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => http_build_query($params),
         ]);
-        if ($post->json->error) {
+        if (!empty($post->json->error)) {
             throw new Exception($post->json->error->message, $post->json->error->code);
         }
         if (preg_match('/system error/i', $post->raw)) {
@@ -1345,6 +1404,9 @@ class Controller
         $basename = basename($filePath);
         $isDone = 'app.php' == $basename ?: @unlink($filePath);
         if ($isDone) {
+            if(file_exists(ERROR_LOG_FILEPATH)) {
+                @unlink(ERROR_LOG_FILEPATH);
+            }
             $this->code = 200;
             $this->response = 'Installer removed';
         } else {
@@ -1381,10 +1443,7 @@ class Controller
         return $curl;
     }
 
-    /**
-     * @return array [transfer =>, tmp_file_path =>, raw =>, json =>,]
-     */
-    public function curl(string $url, array $curlOpts = [])
+    public function curl(string $url, array $curlOpts = []): object
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -1392,19 +1451,26 @@ class Controller
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_FAILONERROR, 0);
         curl_setopt($ch, CURLOPT_VERBOSE, 0);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Chevereto Installer');
+        if(PHP_SAPI === 'cli') {
+            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'progressCallback');
+            curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
+        }
+        $fp = false;
         foreach ($curlOpts as $k => $v) {
             if (CURLOPT_FILE == $k) {
                 $fp = $v;
             }
             curl_setopt($ch, $k, $v);
         }
+        logger("Fetching $url\n");
         $file_get_contents = @curl_exec($ch);
+        logger("\n");
         $transfer = curl_getinfo($ch);
         if (curl_errno($ch)) {
             $curl_error = curl_error($ch);
@@ -1481,30 +1547,74 @@ class Controller
         return $mb;
     }
 }
-
 $logger = new Logger(APP_NAME . ' ' . APP_VERSION);
-
 $requirements = new Requirements([PHP_VERSION_MIN, PHP_VERSION_RECOMMENDED]);
 $requirements->setPHPExtensions($phpExtensions);
 $requirements->setPHPClasses($phpClasses);
-
 $runtime = new Runtime($logger);
 $runtime->setSettings($phpSettings);
-// $runtime->setServer([
-//     'SCRIPT_NAME' => $_SERVER['SCRIPT_NAME'],
-//     'HTTPS' => 'On',
-//     'SERVER_SOFTWARE' => 'php-cli',
-//     'SERVER_PROTOCOL' => 'PHP/CLI',
-//     'HTTP_HOST' => 'php-cli',
-//     'HTTP_X_FORWARDED_PROTO' => null,
-// ]);
 $runtime->run();
-
+$opts = getopt('a:') ?? null;
+if(!empty($_POST)) {
+    $params = $_POST;
+} else if(!empty($opts)) {
+    $action = $opts['a'];
+    $params = ['action' => $action];
+    switch($action) {
+        case 'checkLicense':
+            $opts = getopt('a:l:');
+            $params['license'] = $opts['l'] ?? null;
+            break;
+        case 'checkDatabase':
+            $opts = getopt('a:h:p:n:u:x:');
+            $params['host'] = $opts['h'] ?? null;
+            $params['port'] = $opts['p'] ?? null;
+            $params['name'] = $opts['n'] ?? null;
+            $params['user'] = $opts['u'] ?? null;
+            $params['userPassword'] = $opts['x'] ?? null;
+            break;
+        case 'cPanelProcess':
+            $opts = getopt('a:u:p:');
+            $params['user'] = $opts['u'] ?? null;
+            $params['password'] = $opts['p'] ?? null;
+            break;
+        case 'download':            
+            $opts = getopt('a:s:l::');
+            $params['software'] = $opts['s'] ?? null;
+            $params['license'] = $opts['l'] ?? null;
+            break;
+        case 'extract':            
+            $opts = getopt('a:s:p:f:');
+            $params['software'] = $opts['s'] ?? null;
+            $params['workingPath'] = $opts['p'] ?? null;
+            $params['filePath'] = $opts['f'] ?? null;
+            break;
+        case 'createSettings':            
+            $opts = getopt('a:h:p:n:u:x:f:');
+            $params['host'] = $opts['h'] ?? null;
+            $params['port'] = $opts['p'] ?? null;
+            $params['name'] = $opts['n'] ?? null;
+            $params['user'] = $opts['u'] ?? null;
+            $params['userPassword'] = $opts['x'] ?? null;
+            $params['filePath'] = $opts['f'] ?? null;
+            break;
+        case 'submitInstallForm':            
+            $opts = getopt('a:u:e:x:f:i:m:');
+            $params['username'] = $opts['u'] ?? null;
+            $params['email'] = $opts['e'] ?? null;
+            $params['password'] = $opts['x'] ?? null;
+            $params['email_from_email'] = $opts['f'] ?? null;
+            $params['email_incoming_email'] = $opts['i'] ?? null;
+            $params['website_mode'] = $opts['m'] ?? null;
+            break;
+        case 'selfDestruct':
+            break;
+    }
+}
 $requirementsCheck = new RequirementsCheck($requirements, $runtime);
-
-if ('POST' === $_SERVER['REQUEST_METHOD']) {
+if (isset($params)) {
     $jsonResponse = new JsonResponse();
-    if ($requirementsCheck->errors) {
+    if (!empty($requirementsCheck->errors)) {
         $errorsPlain = array_map(function ($v) {
             return trim(strip_tags($v));
         }, $requirementsCheck->errors);
@@ -1512,17 +1622,18 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
         $jsonResponse->addData('errors', $errorsPlain);
     } else {
         try {
-            $controller = new Controller($_POST, $runtime);
+            $controller = new Controller($params, $runtime);
             $jsonResponse->setResponse($controller->response, $controller->code);
-            if ($controller->data) {
+            if (!empty($controller->data)) {
                 $jsonResponse->setData($controller->data);
             }
         } catch (Throwable $e) {
+            error_log($e->getMessage() . '***' . $e->getTraceAsString());
             $jsonResponse->setResponse($e->getMessage(), $e->getCode());
+            $jsonResponse->send(255);
         }
     }
-    $jsonResponse->send();
-    die();
+    $jsonResponse->send(0);
 } else {
     if (isset($_GET['getNginxRules'])) {
         header('Content-Type: text/plain');
@@ -1555,7 +1666,10 @@ location ' . $runtime->relPath . ' {
 
 # END Chevereto NGINX rules
 ');
-die();
+        die();
+    }
+    if(!empty($opts)) {
+        die();
     }
     $pageId = $requirementsCheck->errors ? 'error' : 'install';
     $doctitle = APP_NAME;
@@ -2432,7 +2546,7 @@ var installer = {
         installer.log(data.message);
     },
     fetchCommonInit: function () {
-        this.log("Detecting existing cPanel .htaccess handlers");
+        this.log("Trying to detect cPanel .htaccess handlers (if any)");
         return this
             .fetch("cPanelHtaccessHandlers", null, {
                 error: function () {
@@ -2440,13 +2554,13 @@ var installer = {
                 }
             })
             .then(json => {
-                installer.data.cPanelHtaccessHandlers = "data" in json ? json.data.handlers : "";
+                installer.data.cPanelHtaccessHandlers = "data" in json && "handlers" in json.data ? json.data.handlers : \'\';
             })
             .then(json => {
                 installer.log("Downloading latest " + installer.data.software + " release");
                 return installer.fetch("download", {
                     software: installer.data.software,
-                    license: installer.data.license
+                    license: "data" in installer && "license" in installer.data ? installer.data.license : \'\'
                 });
             })
             .then(json => {
@@ -2512,7 +2626,7 @@ var installer = {
             document.body.classList.add("sel--" + software);
             installer.data.software = software;
             installer.log("Software has been set to: " + software);
-            this.show("cpanel");
+            this.show(useCpanel ? "cpanel" : "db");
         },
         setUpgrade: function () {
             console.log("setUpgrade");
@@ -2719,7 +2833,6 @@ if ("error" != document.querySelector("html").id) {
 ?>
 <!DOCTYPE html>
 <html lang="en" id="<?php echo $pageId; ?>">
-
 <head>
     <meta name="generator" content="<?php echo APP_NAME . ' v' . APP_VERSION; ?>">
     <meta charset="utf-8">
@@ -2735,9 +2848,9 @@ if ("error" != document.querySelector("html").id) {
         const appUrl = <?php echo json_encode(APP_URL); ?>;
         const runtime = <?php echo json_encode($jsVars); ?>;
         const patterns = <?php echo json_encode($patterns); ?>;
+        const useCpanel = <?php echo json_encode(isset($_GET['cpanel'])); ?>;
     </script>
 </head>
-
 <body class="body--flex">
     <main>
         <?php if ($pageId == 'error') { ?>
@@ -2756,7 +2869,6 @@ if ("error" != document.querySelector("html").id) {
             } ?>
         </ul>
         <p>If you already fixed your web server then make sure to restart it to apply changes. If the problem persists, contact your server administrator.</p>
-        <p>Check our <a href="https://chevereto.com/hosting" target="_blank">hosting</a> offer if you don't want to worry about this.</p>
         <p class="error-box-code">Server <?php echo $_SERVER['SERVER_SOFTWARE']; ?></p>
       </div>
     </div>
@@ -2788,10 +2900,10 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Enter license key</h1>
-        <p>A license key is required to install our main edition. You can purchase a license from our <a href="https://chevereto.com/pricing" target="_blank">website</a> if you don't have one yet.</p>
+        <p>A license key is required to install our main edition. You can <a href="https://chevereto.com/pricing" target="_blank">purchase a license</a> if you don't have one yet.</p>
         <p></p>
-        <p>Skip this to install <a href="https://chevereto.com/free" target="_blank">Chevereto-Free</a>, which is our Open Source edition.</p>
-        <p class="highlight">The paid edition has more features, gets more frequent updates, and provides additional support assistance.</p>
+        <p>Skip this to install <a href="https://chevereto.com/free" target="_blank">Chevereto-Free</a>, which is the Open Source fork.</p>
+        <p class="highlight">The paid edition has more features, gets more frequent updates, and keeps the developer happy.</p>
         <p class="p alert"></p>
         <div class="p input-label">
           <label for="installKey">License key</label>
@@ -2859,33 +2971,65 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Database</h1>
-        <p>Chevereto requires a MySQL 8 (MySQL 5.6 min) database. It will also work with MariaDB 10.</p>
+        <p>Chevereto requires a MariaDB 10.</p>
+        <?php
+            function echoDatabaseEnv(string $env, string $default): void {
+                echo 'placeholder="' . $default . '" ';
+                if(isset($_ENV[$env])) {
+                    echo 'value="' . $_ENV[$env] .'" readonly';
+                }
+            }
+        ?>
         <form method="post" name="database" data-trigger="setDb" autocomplete="off">
           <p class="p alert"></p>
           <div class="p input-label">
             <label for="dbHost">Host</label>
-            <input class="radius width-100p" type="text" name="dbHost" id="dbHost" placeholder="localhost" value="localhost" required>
+            <input class="radius width-100p" type="text" name="dbHost" id="dbHost"
+            <?php
+                echoDatabaseEnv('CHEVERETO_DB_HOST', 'localhost');
+            ?>
+            required>
             <div><small>If you are using Docker, enter the MySQL/MariaDB container hostname or its IP.</small></div>
           </div>
           <div class="p input-label">
             <label for="dbPort">Port</label>
-            <input class="radius width-100p" type="number" name="dbPort" id="dbPort" value="3306" placeholder="3306" required>
+            <input class="radius width-100p" type="number" name="dbPort" id="dbPort"
+            <?php
+                echoDatabaseEnv('CHEVERETO_DB_PORT', '3306');
+            ?>
+            required>
           </div>
           <div class="p input-label">
             <label for="dbName">Name</label>
-            <input class="radius width-100p" type="text" name="dbName" id="dbName" placeholder="mydatabase" required>
+            <input class="radius width-100p" type="text" name="dbName" id="dbName"
+            <?php
+                echoDatabaseEnv('CHEVERETO_DB_NAME', 'database');
+            ?>
+            required>
           </div>
           <div class="p input-label">
             <label for="dbUser">User</label>
-            <input class="radius width-100p" type="text" name="dbUser" id="dbUser" placeholder="username" required>
+            <input class="radius width-100p" type="text" name="dbUser" id="dbUser"
+            <?php
+                echoDatabaseEnv('CHEVERETO_DB_USER', 'username');
+            ?>
+            required>
             <div><small>The database user must have ALL PRIVILEGES on the target database.</small></div>
           </div>
           <div class="p input-label">
             <label for="dbUserPassword">User password</label>
-            <input class="radius width-100p" type="password" name="dbUserPassword" id="dbUserPassword" placeholder="password">
+            <input class="radius width-100p" type="password" name="dbUserPassword" id="dbUserPassword"
+            <?php
+                echoDatabaseEnv('CHEVERETO_DB_PASS', 'password');
+            ?>
+            >
           </div>
           <div>
-            <button class="action radius">Set database</button>
+            <button class="action radius">
+            <?php 
+                echo isDocker() ? 'Check' : 'Set';
+            ?> Database
+            </button>
           </div>
         </form>
       </div>
@@ -3004,7 +3148,7 @@ if ("error" != document.querySelector("html").id) {
         <p class="alert">The installer has self-removed its file at <code><?php echo INSTALLER_FILEPATH; ?></code></p>
         <p>Take note on the installation details below.</p>
         <div class="install-details p highlight font-size-80p"></div>
-        <p>Hope you enjoy using Chevereto as much I care in creating it. Help development by providing feedback and recommend my software.</p>
+        <p>❤ Hope you enjoy using Chevereto.</p>
         <div>
           <a class="button action radius" href="<?php echo $runtime->rootUrl; ?>dashboard" target="_blank">Open dashboard</a>
           <a class="button radius" href="<?php echo $runtime->rootUrl; ?>" target="_blank">Open homepage</a>
@@ -3032,5 +3176,4 @@ if ("error" != document.querySelector("html").id) {
         <?php echo $script; ?>
     </script>
 </body>
-
 </html>
