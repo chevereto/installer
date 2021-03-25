@@ -236,7 +236,7 @@ function writeToStderr(string $message) {
 }
 
 function isDocker(): bool {
-    return ($_ENV['CHEVERETO_SERVICING'] ?? null) == 'docker';
+    return getenv('CHEVERETO_SERVICING') == 'docker';
 }
 set_error_handler(function (int $severity, string $message, string $file, int $line) {
     throw new ErrorException($message, 0, $severity, $file, $line);
@@ -1096,7 +1096,7 @@ class Database
         $query = $this->pdo->query("SHOW TABLES FROM `$this->name`;");
         $tables = $query->fetchAll(PDO::FETCH_COLUMN);
         if (!empty($tables)) {
-            throw new Exception(sprintf('Database "%s" is not empty. Use another database or DROP (remove) all the tables in the target database.', $this->name));
+            throw new LogicException(sprintf('Database "%s" is not empty.', $this->name));
         }
     }
 
@@ -1182,7 +1182,7 @@ class Controller
             CURLOPT_POSTFIELDS => http_build_query(['license' => $params['license']]),
         ]);
         if (isset($post->json->error)) {
-            throw new Exception($post->raw, 403);
+            throw new Exception($post->json->error->message, 403);
         }
         $this->response = 200 == $this->code ? 'Valid license key' : 'Unable to check license';
     }
@@ -1637,34 +1637,27 @@ if (isset($params)) {
 } else {
     if (isset($_GET['getNginxRules'])) {
         header('Content-Type: text/plain');
-printf('# Chevereto NGINX generated rules for ' . $runtime->rootUrl . '
+printf('# Chevereto nginx generated rules for ' . $runtime->rootUrl . '
 
-# Context limits
-client_max_body_size 20M;
-
-# Disable access to sensitive files
-location ~* ' . $runtime->relPath . '(app|content|lib)/.*\.(po|php|lock|sql)$ {
+location ~* ' . $runtime->relPath . '(importing|app|content|lib)/.*\.(po|php|lock|sql)$ {
   deny all;
 }
 
-# Image not found replacement
 location ~ \.(jpe?g|png|gif|webp)$ {
     log_not_found off;
     error_page 404 ' . $runtime->relPath . 'content/images/system/default/404.gif;
 }
 
-# CORS header (avoids font rendering issues)
 location ~* ' . $runtime->relPath . '.*\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js)$ {
   add_header Access-Control-Allow-Origin "*";
 }
 
-# Pretty URLs
 location ' . $runtime->relPath . ' {
   index index.php;
   try_files $uri $uri/ /index.php$is_args$query_string;
 }
 
-# END Chevereto NGINX rules
+# END Chevereto nginx rules
 ');
         die();
     }
@@ -2887,7 +2880,7 @@ if ("error" != document.querySelector("html").id) {
         <p>Confirm that the above details match to where you want to install Chevereto and that there's no other software installed.</p>
         <?php
           if (preg_match('/nginx/i', $runtime->serverSoftware)) { ?>
-          <p class="alert">Add the following <a href="<?php echo $runtime->rootUrl . $runtime->installerFilename . '?getNginxRules'; ?>" target="_blank">server rules</a> to your <a href="https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts" target="_blank">nginx.conf</a> server block. <b>Restart the server to apply changes</b>. Once done, come back here and continue the process.</p>
+          <p class="highlight">✍ Take note on the <a href="<?php echo $runtime->rootUrl . $runtime->installerFilename . '?getNginxRules'; ?>" target="_blank">nginx server rules</a> that should be already applied to your <code>nginx.conf</code> server block. If those aren't provided this installer will fail to complete the process.</p>
         <?php } ?>
         <div>
           <button class="action radius" data-action="show" data-arg="license">Continue</button>
@@ -2900,10 +2893,8 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Enter license key</h1>
-        <p>A license key is required to install our main edition. You can <a href="https://chevereto.com/pricing" target="_blank">purchase a license</a> if you don't have one yet.</p>
-        <p></p>
-        <p>Skip this to install <a href="https://chevereto.com/free" target="_blank">Chevereto-Free</a>, which is the Open Source fork.</p>
-        <p class="highlight">The paid edition has more features, gets more frequent updates, and keeps the developer happy.</p>
+        <p>A license key is required to install Chevereto. You can <a href="https://chevereto.com/pricing" target="_blank">get a license</a> if you don't have one yet.</p>
+        <p class="highlight">💎 The paid edition has more features, gets more frequent updates, and keeps the developer eating.</p>
         <p class="p alert"></p>
         <div class="p input-label">
           <label for="installKey">License key</label>
@@ -2946,10 +2937,10 @@ if ("error" != document.querySelector("html").id) {
         <h1>cPanel access</h1>
         <p>This installer can connect to a cPanel backend using the <a href="https://documentation.cpanel.net/display/DD/Guide+to+UAPI" target="_blank">cPanel UAPI</a> to create the database, its user, and grant database privileges.</p>
         <?php if ('https' == $runtime->httpProtocol) { ?>
-          <p class="highlight">You are not browsing using HTTPS. For extra security, change your cPanel password once the installation gets completed.</p>
+          <p class="highlight">⛔ You are not browsing using HTTPS. For extra security, change your cPanel password once the installation gets completed.</p>
         <?php } ?>
         <p>The cPanel credentials won't be stored either transmitted to anyone.</p>
-        <p class="highlight">Skip this if you don't run cPanel or if you want to setup the database requirements manually.</p>
+        <p class="highlight">⏩ Skip this if you don't run cPanel or if you want to setup the database requirements manually.</p>
         <p class="p alert"></p>
         <div class="p input-label">
           <label for="cpanelUser">User</label>
@@ -2971,12 +2962,16 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Database</h1>
-        <p>Chevereto requires a MariaDB 10.</p>
+        <p>Chevereto requires a SQL database, ideally MariaDB 10.</p>
+        <?php if(isDocker()) { ?>
+        <p class="highlight">✨ Database values are being provided using environment variables.</p>
+        <?php } ?>
         <?php
             function echoDatabaseEnv(string $env, string $default): void {
                 echo 'placeholder="' . $default . '" ';
-                if(isset($_ENV[$env])) {
-                    echo 'value="' . $_ENV[$env] .'" readonly';
+                $getEnv = getenv($env);
+                if($getEnv !== false) {
+                    echo 'value="' . getenv($env) .'" readonly';
                 }
             }
         ?>
@@ -2989,7 +2984,6 @@ if ("error" != document.querySelector("html").id) {
                 echoDatabaseEnv('CHEVERETO_DB_HOST', 'localhost');
             ?>
             required>
-            <div><small>If you are using Docker, enter the MySQL/MariaDB container hostname or its IP.</small></div>
           </div>
           <div class="p input-label">
             <label for="dbPort">Port</label>
