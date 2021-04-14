@@ -20,7 +20,7 @@
 declare(strict_types=1);
 
 const APP_NAME = 'Chevereto Installer';
-const APP_VERSION = '2.1.0';
+const APP_VERSION = '2.1.1';
 const APP_URL = 'https://github.com/chevereto/installer';
 const PHP_VERSION_MIN = '7.3';
 const PHP_VERSION_RECOMMENDED = '7.4';
@@ -237,6 +237,48 @@ function writeToStderr(string $message) {
 
 function isDocker(): bool {
     return getenv('CHEVERETO_SERVICING') == 'docker';
+}
+
+function get_ini_bytes($size)
+{
+    return get_bytes($size, -1);
+}
+
+function get_bytes($size, $cut = null)
+{
+    if ($cut == null) {
+        $suffix = substr($size, -3);
+        $suffix = preg_match('/([A-Za-z]){3}/', $suffix) ? $suffix : substr($size, -2);
+    } else {
+        $suffix = substr($size, $cut);
+    }
+    $number = (int) str_replace($suffix, '', $size);
+    $suffix = strtoupper($suffix);
+
+    $units = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']; // Default dec units
+
+    if (strlen($suffix) == 3) { // Convert units to bin
+        foreach ($units as &$unit) {
+            $split = str_split($unit);
+            $unit = $split[0] . 'I' . $split[1];
+        }
+    }
+
+    if (strlen($suffix) == 1) {
+        $suffix .= 'B'; // Adds missing "B" for shorthand ini notation (Turns 1G into 1GB)
+    }
+    if (!in_array($suffix, $units)) {
+        return $number;
+    }
+    $pow_factor = array_search($suffix, $units) + 1;
+
+    return $number * pow(strlen($suffix) == 2 ? 1000 : 1024, $pow_factor);
+}
+$min_memory = '256M';
+$memory_limit = ini_get('memory_limit');
+$memory_limit_bytes = isset($memory_limit) ? get_ini_bytes($memory_limit) : 0;
+if ($memory_limit_bytes < get_ini_bytes($min_memory)) {
+    @ini_set('memory_limit', $min_memory);
 }
 set_error_handler(function (int $severity, string $message, string $file, int $line) {
     throw new ErrorException($message, 0, $severity, $file, $line);
@@ -1398,23 +1440,6 @@ class Controller
         $this->response = 'Setup complete';
     }
 
-    public function selfDestructAction()
-    {
-        $filePath = $this->runtime->installerFilepath;
-        $basename = basename($filePath);
-        $isDone = 'app.php' == $basename ?: @unlink($filePath);
-        if ($isDone) {
-            if(file_exists(ERROR_LOG_FILEPATH)) {
-                @unlink(ERROR_LOG_FILEPATH);
-            }
-            $this->code = 200;
-            $this->response = 'Installer removed';
-        } else {
-            $this->code = 503;
-            $this->response = 'Unable to remove installer file at ' . $filePath;
-        }
-    }
-
     /**
      * @param string $url      Target download URL
      * @param string $params   Request params
@@ -1554,6 +1579,15 @@ $requirements->setPHPClasses($phpClasses);
 $runtime = new Runtime($logger);
 $runtime->setSettings($phpSettings);
 $runtime->run();
+$lockRelative = 'app/installer.lock';
+if(file_exists($runtime->absPath . $lockRelative)) {
+    if(PHP_SAPI === 'cli') {
+        logger("Locked ($lockRelative)\n");
+    } else {
+        set_status_header(403);
+    }
+    die(255);
+}
 $opts = getopt('a:') ?? null;
 if(!empty($_POST)) {
     $params = $_POST;
@@ -1606,8 +1640,6 @@ if(!empty($_POST)) {
             $params['email_from_email'] = $opts['f'] ?? null;
             $params['email_incoming_email'] = $opts['i'] ?? null;
             $params['website_mode'] = $opts['m'] ?? null;
-            break;
-        case 'selfDestruct':
             break;
     }
 }
@@ -2481,7 +2513,7 @@ var installer = {
                 try {
                     return JSON.parse(text);
                 } catch (e) {
-                    throw Error("Unable to parse server response. The installer is expecting a JSON response, but your server thrown this:<pre><code>" + escapeHtml(text) + "</code></pre> This is not normal and you should report it to our <a href=\'" + appUrl + "\' target=\'_blank\'>GitHub repository</a>.");
+                    throw Error("Unable to parse server response. The installer is expecting a JSON response, but your server thrown this:<pre><code>" + escapeHtml(text) + "</code></pre>");
                 }
             })
             .catch(error => {
@@ -2706,24 +2738,6 @@ var installer = {
             installer
                 .fetchCommonInit()
                 .then(data => {
-                    installer.log(
-                        "Removing installer file at " + runtime.installerFilepath
-                    );
-                    return installer.fetch("selfDestruct", null, {
-                        error: function (data) {
-                            var todo =
-                                "Remove the installer file at " +
-                                runtime.installerFilepath +
-                                " and open " +
-                                runtime.rootUrl +
-                                " to continue the process.";
-                            installer.pushAlert(todo);
-                            installer.abortInstall(false);
-                            return false;
-                        }
-                    });
-                })
-                .then(data => {
                     installer.setBodyInstalling(false);
                     installer.log("Upgrade completed");
                     setTimeout(function () {
@@ -2753,24 +2767,6 @@ var installer = {
                         website_mode: \'community\',
                     };
                     return installer.fetch("submitInstallForm", params);
-                })
-                .then(data => {
-                    installer.log(
-                        "Removing installer file at " + runtime.installerFilepath
-                    );
-                    return installer.fetch("selfDestruct", null, {
-                        error: function (data) {
-                            var todo =
-                                "Remove the installer file at " +
-                                runtime.installerFilepath +
-                                " and open " +
-                                runtime.rootUrl +
-                                " to continue the process.";
-                            installer.pushAlert(todo);
-                            installer.abortInstall(false);
-                            return false;
-                        }
-                    });
                 })
                 .then(data => {
                     installer.setBodyInstalling(false);
@@ -3139,7 +3135,7 @@ if ("error" != document.querySelector("html").id) {
       <div>
         <h1>Installation completed</h1>
         <p>Chevereto has been installed. You can now login to your dashboard panel to configure your website to fit your needs.</p>
-        <p class="alert">The installer has self-removed its file at <code><?php echo INSTALLER_FILEPATH; ?></code></p>
+        <p class="alert">You must remove the installer file at <code><?php echo INSTALLER_FILEPATH; ?></code></p>
         <p>Take note on the installation details below.</p>
         <div class="install-details p highlight font-size-80p"></div>
         <p>❤ Hope you enjoy using Chevereto.</p>

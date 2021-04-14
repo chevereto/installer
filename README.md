@@ -22,7 +22,7 @@ A single `.php` file that installs Chevereto using PHP.
 
 ## Requirements
 
-- PHP 7.4
+- PHP 7.4+
 - MariaDB 10
 - Apache (with `mod_rewrite`) / Nginx (for HTTP API)
 
@@ -152,12 +152,6 @@ Parameters:
 
 - website_mode: `community`, `personal`
 
-## selfDestruct
-
-Self-remove the `installer.php` file and `installer.error.log`.
-
-No parameters required.
-
 ### Response
 
 All responses are in JSON format and use HTTP status codes:
@@ -182,32 +176,4 @@ You can generate Nginx server rules on the fly with an HTTP GET.
 ```text
 GET /installer.php?getNginxRules HTTP/1.1
 Host: localhost
-```
-
-The response is in plain text and looks like this:
-
-```text
-# Chevereto nginx generated rules for http://localhost/
-## Disable access to sensitive files
-location ~* /(app|content|lib)/.*\.(po|php|lock|sql)$ {
-  deny all;
-}
-## CORS headers
-location ~* /.*\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js) {
-  add_header Access-Control-Allow-Origin "*";
-}
-## Upload path for image content only and set 404 replacement
-location ^~ /images/ {
-  location ~* (jpe?g|png|gif) {
-      log_not_found off;
-      error_page 404 /content/images/system/default/404.gif;
-  }
-  return 403;
-}
-## Pretty URLs
-location / {
-  index index.php;
-  try_files $uri $uri/ /index.php?$query_string;
-}
-# END Chevereto nginx rules
 ```
