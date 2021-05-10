@@ -20,9 +20,9 @@
 declare(strict_types=1);
 
 const APP_NAME = 'Chevereto Installer';
-const APP_VERSION = '2.1.1';
+const APP_VERSION = '2.2.0';
 const APP_URL = 'https://github.com/chevereto/installer';
-const PHP_VERSION_MIN = '7.3';
+const PHP_VERSION_MIN = '7.4';
 const PHP_VERSION_RECOMMENDED = '7.4';
 const VENDOR = [
     'name' => 'Chevereto',
@@ -773,8 +773,8 @@ class Runtime
         $this->relPath = rtrim(dirname($this->server['SCRIPT_NAME']), '\/') . '/';
         $this->installerFilename = basename(INSTALLER_FILEPATH);
         $this->installerFilepath = INSTALLER_FILEPATH;
-        $this->httpHost = $this->server['HTTP_HOST'] ?? 'n/a';
-        $this->serverSoftware = $this->server['SERVER_SOFTWARE'] ?? 'n/a';
+        $this->httpHost = $this->server['HTTP_HOST'] ?? 'null';
+        $this->serverSoftware = $this->server['SERVER_SOFTWARE'] ?? 'null';
         $httpProtocol = 'http';
         $isHttpsOn = !empty($this->server['HTTPS']) && strtolower($this->server['HTTPS']) == 'on';
         $isHttpsX = isset($this->server['HTTP_X_FORWARDED_PROTO']) && $this->server['HTTP_X_FORWARDED_PROTO'] == 'https';
@@ -1102,7 +1102,7 @@ class JsonResponse
 }
 class Database
 {
-    const PRIVILEGES = ['ALTER', 'CREATE', 'DELETE', 'DROP', 'INDEX', 'INSERT', 'SELECT', 'TRIGGER', 'UPDATE'];
+    const PRIVILEGES = ['ALTER', 'CREATE', 'DELETE', 'DROP', 'INDEX', 'INSERT', 'SELECT', 'UPDATE'];
 
     /** @var string */
     protected $host;
@@ -1409,8 +1409,14 @@ class Controller
 
     public function submitInstallFormAction(array $params)
     {
+        $installUrl = $this->runtime->rootUrl;
         $missing = [];
-        foreach(['username', 'email', 'password', 'email_from_email', 'email_incoming_email', 'website_mode'] as $param) {
+        $required = ['username', 'email', 'password', 'email_from_email', 'email_incoming_email', 'website_mode'];
+        if(PHP_SAPI === 'cli') {
+            $required[] = 'website';
+            $installUrl = rtrim($params['website'], '/') . '/';
+        }
+        foreach($required as $param) {
             if(!isset($params[$param])) {
                 $missing[] = $param;
             }
@@ -1418,7 +1424,6 @@ class Controller
         if($missing !== []) {
             throw new InvalidArgumentException(sprintf('Missing %s', implode(', ', $missing)));
         }
-        $installUrl = $this->runtime->rootUrl;
         if(isDocker()) {
             $installUrl = 'http://localhost/';
         }
@@ -1633,7 +1638,8 @@ if(!empty($_POST)) {
             $params['filePath'] = $opts['f'] ?? null;
             break;
         case 'submitInstallForm':            
-            $opts = getopt('a:u:e:x:f:i:m:');
+            $opts = getopt('a:w:u:e:x:f:i:m:');
+            $params['website'] = $opts['w'] ?? null;
             $params['username'] = $opts['u'] ?? null;
             $params['email'] = $opts['e'] ?? null;
             $params['password'] = $opts['x'] ?? null;
