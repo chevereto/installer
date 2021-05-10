@@ -54,7 +54,7 @@ Content-Type: multipart/form-data
 ### CLI API
 
 ```sh
-php installer.php -a checkLicense -l LicenseKeyToCheck
+php installer.php -a <ACTION> <PARAMETERS>
 ```
 
 ## API Actions
@@ -68,6 +68,10 @@ Parameters:
 | HTTP    | CLI |
 | ------- | --- |
 | license | l   |
+
+```sh
+php installer.php -a checkLicense -l=<LICENSE_KEY>
+```
 
 ### checkDatabase
 
@@ -83,6 +87,15 @@ Parameters (database credentials):
 | user         | u   |
 | userPassword | x   |
 
+```sh
+php installer.php -a checkDatabase \
+    -h localhost \
+    -p 3306 \
+    -n db_name \
+    -u db_user \
+    -x db_password
+```
+
 ### cPanelProcess
 
 Creates a database, database user and grant privileges.
@@ -93,6 +106,12 @@ Parameters (cPanel credentials):
 | -------- | --- |
 | user     | u   |
 | password | x   |
+
+```sh
+php installer.php -a cPanelProcess \
+    -u user \
+    -x password
+```
 
 ### download
 
@@ -105,9 +124,16 @@ Parameters (license is optional, needed for software=`chevereto`):
 | software | s   |
 | license  | l   |
 
-Note: When using CLI pass `l=key`.
+```sh
+php installer.php -a download \
+    -s chevereto \
+    -l=<LICENSE_KEY>
+```
 
-- Software: `chevereto`, `chevereto-free`
+```sh
+php installer.php -a download \
+    -s chevereto-free
+```
 
 ### extract
 
@@ -121,7 +147,19 @@ Parameters:
 | workingPath | p   |
 | filePath    | f   |
 
-- Software: `chevereto`, `chevereto-free`
+```sh
+php installer.php -a extract \
+    -s chevereto \
+    -p /var/www/html/ \
+    -f <DOWNLOADED_FILENAME>
+```
+
+```sh
+php installer.php -a extract \
+    -s chevereto-free \
+    -p /var/www/html/ \
+    -f <DOWNLOADED_FILENAME>
+```
 
 ## createSettings
 
@@ -134,15 +172,27 @@ Generates `app/settings.php` containing the database details.
 | name         | n   |
 | user         | u   |
 | userPassword | x   |
+| filePath     | f   |
+
+```sh
+php installer.php -a createSettings \
+    -h localhost \
+    -p 3306 \
+    -n db_name \
+    -u db_user \
+    -x db_password \
+    -f app/settings.php
+```
 
 ## submitInstallForm
 
-Submits the installation form at `/install`.
+Submits the installation form at `<website>/install`.
 
 Parameters:
 
 | HTTP                 | CLI |
 | -------------------- | --- |
+| website              | w   |
 | username             | u   |
 | email                | e   |
 | password             | x   |
@@ -151,6 +201,16 @@ Parameters:
 | website_mode         | m   |
 
 - website_mode: `community`, `personal`
+
+```sh
+php installer.php -a submitInstallForm \
+    -w http://localhost/ \
+    -u user -e user@hostname.loc \
+    -x password \
+    -f from@hostname.loc \
+    -i inbox@hostname.loc \
+    -m community
+```
 
 ### Response
 
