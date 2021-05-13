@@ -240,3 +240,7 @@ You can generate Nginx server rules on the fly with an HTTP GET.
 GET /installer.php?getNginxRules HTTP/1.1
 Host: localhost
 ```
+
+## Contributing
+
+Want to help? Go to [chevereto/installer-source](https://github.com/chevereto/installer-source) to get started.
