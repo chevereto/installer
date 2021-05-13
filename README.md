@@ -123,16 +123,19 @@ Parameters (license is optional, needed for software=`chevereto`):
 | -------- | --- |
 | software | s   |
 | license  | l   |
+| tag      | t   |
 
 ```sh
 php installer.php -a download \
     -s chevereto \
+    -t=latest \
     -l=<LICENSE_KEY>
 ```
 
 ```sh
 php installer.php -a download \
-    -s chevereto-free
+    -s chevereto-free \
+    -t="1.3.0"
 ```
 
 ### extract

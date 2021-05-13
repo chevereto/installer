@@ -35,7 +35,7 @@ const APPLICATIONS = [
         'name' => 'Chevereto',
         'license' => 'Paid',
         'url' => 'https://chevereto.com',
-        'zipball' => 'https://chevereto.com/api/download/latest',
+        'zipball' => 'https://chevereto.com/api/download/%tag%',
         'folder' => 'chevereto',
         'vendor' => VENDOR,
     ],
@@ -43,8 +43,8 @@ const APPLICATIONS = [
         'name' => 'Chevereto-Free',
         'license' => 'Open Source',
         'url' => 'https://github.com/Chevereto/Chevereto-Free',
-        'zipball' => 'https://api.github.com/repos/Chevereto/Chevereto-Free/releases/latest',
-        'folder' => 'Chevereto/Chevereto-Free-',
+        'zipball' => 'https://api.github.com/repos/Chevereto/Chevereto-Free/releases/%tag%',
+        'folder' => 'Chevereto-Chevereto-Free-%commit%',
         'vendor' => VENDOR,
     ],
 ];
@@ -1296,6 +1296,11 @@ class Controller
         if (!isset($zipball)) {
             throw new Exception('Invalid software parameter', 400);
         }
+        $tag = $params['tag'] ?? 'latest';
+        if($tag !== 'latest' && $params['software'] == 'chevereto-free') {
+            $tag = "tags/$tag";
+        }
+        $zipball = str_replace('%tag%', $tag, $zipball);
         if ($params['software'] == 'chevereto') {
             $isPost = true;
         } else {
@@ -1307,7 +1312,6 @@ class Controller
             $zipball = $get->json->zipball_url;
         }
         $curl = $this->downloadFile($zipball, $params, $filePath, $isPost);
-        // Default chevereto.com API handling
         if (isset($curl->json->error)) {
             throw new RuntimeException($curl->json->error->message, $curl->json->status_code);
         }
@@ -1364,7 +1368,7 @@ class Controller
         $folder = $software['folder'];
         if ($params['software'] == 'chevereto-free') {
             $comment = $zipExt->getArchiveComment();
-            $folder = str_replace('/', '-', $folder) . substr($comment, 0, 7);
+            $folder = str_replace('%commit%', substr($comment, 0, 7), $folder);
         }
         $extraction = $zipExt->extractSubdirTo($workingPath, $folder);
         if (!empty($extraction)) {
@@ -1618,8 +1622,9 @@ if(!empty($_POST)) {
             $params['password'] = $opts['p'] ?? null;
             break;
         case 'download':            
-            $opts = getopt('a:s:l::');
+            $opts = getopt('a:s:t::l::');
             $params['software'] = $opts['s'] ?? null;
+            $params['tag'] = $opts['t'] ?? null;
             $params['license'] = $opts['l'] ?? null;
             break;
         case 'extract':            
