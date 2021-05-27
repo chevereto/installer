@@ -20,7 +20,7 @@
 declare(strict_types=1);
 
 const APP_NAME = 'Chevereto Installer';
-const APP_VERSION = '2.2.1';
+const APP_VERSION = '2.2.2';
 const APP_URL = 'https://github.com/chevereto/installer';
 const PHP_VERSION_MIN = '7.4';
 const PHP_VERSION_RECOMMENDED = '7.4';
@@ -86,6 +86,7 @@ $themeColor = '#ecf0f1';
 $shortcutIcon = 'data:image/png;base64,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';
 define('ERROR_LOG_FILEPATH', $phpSettings['error_log']);
 const INSTALLER_FILEPATH = __FILE__;
+const LOCK_FILEPATH = __DIR__ . '/installer.lock';
 function password(int $length)
 {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?';
@@ -1281,6 +1282,30 @@ class Controller
         }
     }
 
+    public function lockAction(array $params)
+    {
+        put(LOCK_FILEPATH, '');
+        if(file_exists(LOCK_FILEPATH)) {
+            $this->code = 200;
+            $this->response = 'installer locked';
+        } else {
+            $this->code = 500;
+            $this->response = 'unable to lock installer';
+        }
+    }
+
+    public function selfDestructAction(array $params)
+    {
+        unlink(INSTALLER_FILEPATH);
+        if(!file_exists(LOCK_FILEPATH)) {
+            $this->code = 200;
+            $this->response = 'installer destroyed';
+        } else {
+            $this->code = 500;
+            $this->response = 'unable to destroy installer';
+        }
+    }
+
     public function downloadAction(array $params)
     {
         if(!isset($params['software'])) {
@@ -1588,10 +1613,9 @@ $requirements->setPHPClasses($phpClasses);
 $runtime = new Runtime($logger);
 $runtime->setSettings($phpSettings);
 $runtime->run();
-$lockRelative = 'app/installer.lock';
-if(file_exists($runtime->absPath . $lockRelative)) {
+if(file_exists(LOCK_FILEPATH)) {
     if(PHP_SAPI === 'cli') {
-        logger("Locked ($lockRelative)\n");
+        logger("Locked (" . LOCK_FILEPATH . ")\n");
     } else {
         set_status_header(403);
     }
@@ -1651,6 +1675,9 @@ if(!empty($_POST)) {
             $params['email_from_email'] = $opts['f'] ?? null;
             $params['email_incoming_email'] = $opts['i'] ?? null;
             $params['website_mode'] = $opts['m'] ?? null;
+            break;
+        case 'lock':
+        case 'selfDestruct':
             break;
     }
 }
@@ -2749,6 +2776,12 @@ var installer = {
             installer
                 .fetchCommonInit()
                 .then(data => {
+                    installer.log(
+                        "Removing installer file at " + runtime.installerFilepath
+                    );
+                    return installer.fetch("selfDestruct", null);
+                })
+                .then(data => {
                     installer.setBodyInstalling(false);
                     installer.log("Upgrade completed");
                     setTimeout(function () {
@@ -2759,7 +2792,6 @@ var installer = {
         install: function () {
             installer.setBodyInstalling(true);
             this.show("installing");
-
             installer
                 .fetchCommonInit()
                 .then(data => {
@@ -2778,6 +2810,12 @@ var installer = {
                         website_mode: \'community\',
                     };
                     return installer.fetch("submitInstallForm", params);
+                })
+                .then(data => {
+                    installer.log(
+                        "Removing installer file at " + runtime.installerFilepath
+                    );
+                    return installer.fetch("selfDestruct", null);
                 })
                 .then(data => {
                     installer.setBodyInstalling(false);
@@ -3146,10 +3184,10 @@ if ("error" != document.querySelector("html").id) {
       <div>
         <h1>Installation completed</h1>
         <p>Chevereto has been installed. You can now login to your dashboard panel to configure your website to fit your needs.</p>
-        <p class="alert">You must remove the installer file at <code><?php echo INSTALLER_FILEPATH; ?></code></p>
+        <p class="alert">Double-check if the installer file was removed from <code><?php echo INSTALLER_FILEPATH; ?></code></p>
         <p>Take note on the installation details below.</p>
         <div class="install-details p highlight font-size-80p"></div>
-        <p>❤ Hope you enjoy using Chevereto.</p>
+        <p>💖 Hope you enjoy using Chevereto.</p>
         <div>
           <a class="button action radius" href="<?php echo $runtime->rootUrl; ?>dashboard" target="_blank">Open dashboard</a>
           <a class="button radius" href="<?php echo $runtime->rootUrl; ?>" target="_blank">Open homepage</a>
@@ -3163,7 +3201,7 @@ if ("error" != document.querySelector("html").id) {
       <div>
         <h1>Upgrade prepared</h1>
         <p>The system files have been upgraded. You can now install the upgrade which will perform the database changes needed and complete the process.</p>
-        <p class="alert">The installer has self-removed its file at <code><?php echo INSTALLER_FILEPATH; ?></code></p>
+        <p class="alert">Double-check if the installer file was removed from <code><?php echo INSTALLER_FILEPATH; ?></code></p>
         <div>
           <a class="button action radius" href="<?php echo $runtime->rootUrl; ?>install">Install upgrade</a>
         </div>
