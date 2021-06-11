@@ -4,7 +4,9 @@
 
 ![Chevereto](LOGO.svg)
 
+[![Community](https://img.shields.io/badge/chv.to-community-blue?style=flat-square)](https://chv.to/community)
 [![Discord](https://img.shields.io/discord/759137550312407050?style=flat-square)](https://chv.to/discord)
+[![Twitter Follow](https://img.shields.io/twitter/follow/chevereto?style=social)](https://twitter.com/chevereto)
 
 <img src="https://chevereto.com/src/img/installer/screen-v2.png?20190623" style="max-height: 600px;">
 
