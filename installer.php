@@ -20,7 +20,7 @@
 declare(strict_types=1);
 
 const APP_NAME = 'Chevereto Installer';
-const APP_VERSION = '2.2.2';
+const APP_VERSION = '2.2.3';
 const APP_URL = 'https://github.com/chevereto/installer';
 const PHP_VERSION_MIN = '7.4';
 const PHP_VERSION_RECOMMENDED = '7.4';
@@ -1969,7 +1969,7 @@ button,
   font-weight: bold;
   padding-right: 15px;
   padding-left: 15px;
-  line-height: 1;
+  line-height: 0.83em;
   outline: 0;
   cursor: pointer;
   text-shadow: 1px 1px 0 rgba(255, 255, 255, .1);
@@ -2886,7 +2886,7 @@ if ("error" != document.querySelector("html").id) {
         const appUrl = <?php echo json_encode(APP_URL); ?>;
         const runtime = <?php echo json_encode($jsVars); ?>;
         const patterns = <?php echo json_encode($patterns); ?>;
-        const useCpanel = <?php echo json_encode(isset($_GET['cpanel'])); ?>;
+        const useCpanel = true;
     </script>
 </head>
 <body class="body--flex">
@@ -2925,7 +2925,7 @@ if ("error" != document.querySelector("html").id) {
         <p>Confirm that the above details match to where you want to install Chevereto and that there's no other software installed.</p>
         <?php
           if (preg_match('/nginx/i', $runtime->serverSoftware)) { ?>
-          <p class="highlight">✍ Take note on the <a href="<?php echo $runtime->rootUrl . $runtime->installerFilename . '?getNginxRules'; ?>" target="_blank">nginx server rules</a> that should be already applied to your <code>nginx.conf</code> server block. If those aren't provided this installer will fail to complete the process.</p>
+          <p class="highlight">Take note on the <a href="<?php echo $runtime->rootUrl . $runtime->installerFilename . '?getNginxRules'; ?>" target="_blank">nginx server rules</a> that should be already applied to your <code>nginx.conf</code> server block. If those aren't provided this installer will fail to complete the process.</p>
         <?php } ?>
         <div>
           <button class="action radius" data-action="show" data-arg="license">Continue</button>
@@ -2938,17 +2938,16 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Enter license key</h1>
-        <p>A license key is required to install Chevereto. You can <a href="https://chevereto.com/pricing" target="_blank">get a license</a> if you don't have one yet.</p>
-        <p class="highlight">💎 The paid edition has more features, gets more frequent updates, and keeps the developer eating.</p>
+        <p>A license key is required to install Chevereto.</p>
         <p class="p alert"></p>
         <div class="p input-label">
           <label for="installKey">License key</label>
-          <input class="radius width-100p" type="text" name="installKey" id="installKey" placeholder="Paste your license key here" autofill="off" autocomplete="off">
+          <input class="radius width-100p" type="password" name="installKey" id="installKey" placeholder="Paste your license key here" autofill="off" autocomplete="off">
           <div><small>You can find the license key at your <a href="https://chevereto.com/panel/license" target="_blank">client panel</a>.</small></div>
         </div>
         <div>
           <button class="action radius" data-action="setLicense" data-arg="installKey">Enter license key</button>
-          <button class=" radius" data-action="setSoftware" data-arg="chevereto-free">Skip – Use Chevereto-Free</button>
+          <a class="button radius" href="https://chevereto.com/pricing" target="_blank">Purchase</a>
         </div>
       </div>
     </div>
@@ -2959,17 +2958,18 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Upgrade</h1>
-        <p>A license key is required to upgrade to our main edition. You can purchase a license from our <a href="https://chevereto.com/pricing" target="_blank">website</a> if you don't have one yet.</p>
+        <p>A license key is required to upgrade to our main edition.</p>
         <p>The system database schema will change, and the system files will get replaced. Don't forget to backup.</p>
         <p>Your system settings, previous uploads, and all user-generated content will remain there.</p>
         <p class="p alert"></p>
         <div class="p input-label">
           <label for="upgradeKey">License key</label>
-          <input class="radius width-100p" type="text" name="upgradeKey" id="upgradeKey" placeholder="Paste your license key here">
+          <input class="radius width-100p" type="password" name="upgradeKey" id="upgradeKey" placeholder="Paste your license key here">
           <div><small>You can find the license key at your <a href="https://chevereto.com/panel/license" target="_blank">client panel</a>.</small></div>
         </div>
         <div>
           <button class="action radius" data-action="setUpgrade" data-arg="upgradeKey">Enter license key</button>
+          <a class="button radius" href="https://chevereto.com/pricing" target="_blank">Purchase</a>
         </div>
       </div>
     </div>
@@ -2981,11 +2981,11 @@ if ("error" != document.querySelector("html").id) {
       <div>
         <h1>cPanel access</h1>
         <p>This installer can connect to a cPanel backend using the <a href="https://documentation.cpanel.net/display/DD/Guide+to+UAPI" target="_blank">cPanel UAPI</a> to create the database, its user, and grant database privileges.</p>
-        <?php if ('https' == $runtime->httpProtocol) { ?>
-          <p class="highlight">⛔ You are not browsing using HTTPS. For extra security, change your cPanel password once the installation gets completed.</p>
+        <?php if ('http' == $runtime->httpProtocol) { ?>
+          <p class="highlight">You are not browsing using HTTPS. For extra security, change your cPanel password once the installation gets completed.</p>
         <?php } ?>
         <p>The cPanel credentials won't be stored either transmitted to anyone.</p>
-        <p class="highlight">⏩ Skip this if you don't run cPanel or if you want to setup the database requirements manually.</p>
+        <p class="highlight">Skip this if you don't run cPanel or if you want to setup the database requirements manually.</p>
         <p class="p alert"></p>
         <div class="p input-label">
           <label for="cpanelUser">User</label>
@@ -3007,9 +3007,9 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Database</h1>
-        <p>Chevereto requires a SQL database, ideally MariaDB 10.</p>
+        <p>Chevereto requires MySQL 8 or MariaDB 10. Chevereto also supports MySQL 5.7.</p>
         <?php if(isDocker()) { ?>
-        <p class="highlight">✨ Database values are being provided using environment variables.</p>
+        <p class="highlight">Database values are being provided using environment variables.</p>
         <?php } ?>
         <?php
             function echoDatabaseEnv(string $env, string $default): void {

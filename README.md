@@ -25,7 +25,7 @@ A single `.php` file that installs Chevereto using PHP.
 ## Requirements
 
 - PHP 7.4+
-- MariaDB 10
+- MySQL 5.7, MySQL 8, MariaDB 10
 - Apache (with `mod_rewrite`) / Nginx (for HTTP API)
 
 ## How to use it
@@ -39,6 +39,8 @@ A single `.php` file that installs Chevereto using PHP.
 All functions can be accessed programmatically. Note that HTTP parameters bind to one-char command options for CLI API.
 
 ### HTTP API
+
+> Note: The HTTP API is only available for the paid edition.
 
 ```text
 POST /installer.php HTTP/1.1
