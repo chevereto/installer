@@ -102,7 +102,7 @@ Extract the downloaded software file (filePath) in the target working path (abso
 php installer.php -a extract \
     -s chevereto \
     -p /var/www/html/ \
-    -f DOWNLOADED_FILENAME
+    -f chevereto-pkg-*.zip
 ```
 
 ## createSettings

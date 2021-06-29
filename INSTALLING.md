@@ -10,6 +10,9 @@
 
 ## How to use it
 
-1. Upload the `installer.php` file to your target folder.
-   1. `public_html` for HTTP API
-   2. `any_path` where you can run PHP CLI
+- Upload the `installer.php` file to your target folder
+
+| API  | Location                                  |
+| ---- | ----------------------------------------- |
+| HTTP | `/var/www/html/public_html` (public HTTP) |
+| CLI  | any_path` where you can run PHP CLI       |

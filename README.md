@@ -27,8 +27,8 @@ This tool offers:
 ## Reference
 
 - [INSTALLING](INSTALLING.md)
-- [HTTP API](HTTP_API.md)
-- [CLI API](CLI_API.md)
+- [HTTP API](HTTP.md)
+- [CLI API](CLI.md)
 
 ## Nginx server rules
 
