@@ -32,9 +32,8 @@ This tool offers:
 
 ## Nginx server rules
 
-You can generate Nginx server rules on the fly with an HTTP GET.
+You can generate Nginx server rules on the fly with HTTP GET.
 
 ```text
 GET /installer.php?getNginxRules HTTP/1.1
-Host: localhost
 ```
