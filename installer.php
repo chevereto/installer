@@ -5,22 +5,17 @@
     http://chevereto.com/
 
     @author	Rodolfo Berrios A. <http://rodolfoberrios.com/>
-
-      /$$$$$$  /$$                                                           /$$
-     /$$__  $$| $$                                                          | $$
-    | $$  \__/| $$$$$$$   /$$$$$$  /$$    /$$ /$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$    /$$$$$$
-    | $$      | $$__  $$ /$$__  $$|  $$  /$$//$$__  $$ /$$__  $$ /$$__  $$|_  $$_/   /$$__  $$
-    | $$      | $$  \ $$| $$$$$$$$ \  $$/$$/| $$$$$$$$| $$  \__/| $$$$$$$$  | $$    | $$  \ $$
-    | $$    $$| $$  | $$| $$_____/  \  $$$/ | $$_____/| $$      | $$_____/  | $$ /$$| $$  | $$
-    |  $$$$$$/| $$  | $$|  $$$$$$$   \  $/  |  $$$$$$$| $$      |  $$$$$$$  |  $$$$/|  $$$$$$/
-     \______/ |__/  |__/ \_______/    \_/    \_______/|__/       \_______/   \___/   \______/
+          __                        __     
+     ____/ /  ___ _  _____ _______ / /____ 
+    / __/ _ \/ -_) |/ / -_) __/ -_) __/ _ \ 
+    \__/_//_/\__/|___/\__/_/  \__/\__/\___/
 
   --------------------------------------------------------------------- */
 
 declare(strict_types=1);
 
 const APP_NAME = 'Chevereto Installer';
-const APP_VERSION = '2.2.3';
+const APP_VERSION = '2.3.0';
 const APP_URL = 'https://github.com/chevereto/installer';
 const PHP_VERSION_MIN = '7.4';
 const PHP_VERSION_RECOMMENDED = '7.4';
@@ -39,19 +34,6 @@ const APPLICATIONS = [
         'folder' => 'chevereto',
         'vendor' => VENDOR,
     ],
-    'chevereto-free' => [
-        'name' => 'Chevereto-Free',
-        'license' => 'Open Source',
-        'url' => 'https://github.com/Chevereto/Chevereto-Free',
-        'zipball' => 'https://api.github.com/repos/Chevereto/Chevereto-Free/releases/%tag%',
-        'folder' => 'Chevereto-Chevereto-Free-%commit%',
-        'vendor' => VENDOR,
-    ],
-];
-$patterns = [
-    'username_pattern' => '^[\w]{3,16}$',
-    'user_password_pattern' => '^.{6,128}$',
-    'email_pattern' => "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$",
 ];
 $phpSettings = [
     'error_reporting' => E_ALL ^ E_NOTICE,
@@ -240,6 +222,18 @@ function isDocker(): bool {
     return getenv('CHEVERETO_SERVICING') == 'docker';
 }
 
+function isDatabaseEnvProvided(): bool {
+    if(isDocker()) {
+        return true;
+    }
+    return getenv('CHEVERETO_DB_HOST') !== false
+        && getenv('CHEVERETO_DB_PORT') !== false
+        && getenv('CHEVERETO_DB_NAME') !== false
+        && getenv('CHEVERETO_DB_USER') !== false
+        && getenv('CHEVERETO_DB_PASS') !== false;
+
+}
+
 function get_ini_bytes($size)
 {
     return get_bytes($size, -1);
@@ -296,7 +290,7 @@ set_exception_handler(function (Throwable $e) {
         2 => "debug @ print",
         3 => "debug @ print,$device",
     ];
-    $internal_error .= ' [' . $table[$debug_level] . '] - https://v3-docs.chevereto.com/setup/debug.html';
+    $internal_error .= ' [' . $table[$debug_level] . '] - https://chv.to/v3debug';
     $message = [$internal_error];
     $message[] = '';
     $message[] = '<b>Fatal error [' . $e->getCode() . ']:</b> ' . strip_tags($e->getMessage());
@@ -508,8 +502,21 @@ class RequirementsCheck
         $this->checkApacheModRewrite();
         $this->checkUtf8Functions();
         $this->checkCurl();
+        $this->checkImageLibrary();
         if (!$this->isMissing('cURL')) {
             $this->checkSourceAPI();
+        }
+    }
+
+    public function checkImageLibrary() {
+        $image_lib = [
+            'gd' => extension_loaded('gd') && function_exists('gd_info'),
+            'imagick' => extension_loaded('imagick'),
+        ];
+        if(!$image_lib['gd'] && !$image_lib['imagick']) {
+            $this->addMissing('GD', 'https://www.php.net/manual/en/book.image.php', 'No %l library support in this PHP installation.');
+            $this->addMissing('Imagick', 'https://www.php.net/manual/en/book.imagick.php', 'No %l library support in this PHP installation.');
+            $this->addMissing('PHP', '', 'Enable either Imagick extension or GD extension to perform image processing.');
         }
     }
 
@@ -749,7 +756,7 @@ class Runtime
             'log_errors' => ini_set('log_errors', (string) $settings['log_errors']),
             'display_errors' => ini_set('display_errors', (string) $settings['display_errors']),
             'error_log' => ini_set('error_log', $settings['error_log']),
-            'set_time_limit' => set_time_limit($settings['time_limit']),
+            'time_limit' => @set_time_limit($settings['time_limit']),
             'ini_set' => ini_set('default_charset', $settings['default_charset']),
             'setlocale' => setlocale(LC_ALL, $settings['LC_ALL']),
         ];
@@ -758,7 +765,7 @@ class Runtime
             if (false === $v) {
                 $this->logger->addMessage(strtr($messageTemplate, [
                     '%k' => $k,
-                    '%v' => var_export($settings[$k], true),
+                    '%v' => var_export($settings[$k] ?? '', true),
                 ]));
             }
         }
@@ -1322,9 +1329,6 @@ class Controller
             throw new Exception('Invalid software parameter', 400);
         }
         $tag = $params['tag'] ?? 'latest';
-        if($tag !== 'latest' && $params['software'] == 'chevereto-free') {
-            $tag = "tags/$tag";
-        }
         $zipball = str_replace('%tag%', $tag, $zipball);
         if ($params['software'] == 'chevereto') {
             $isPost = true;
@@ -1391,10 +1395,6 @@ class Controller
         }
         $numFiles = $zipExt->numFiles - 1; // because of top level folder
         $folder = $software['folder'];
-        if ($params['software'] == 'chevereto-free') {
-            $comment = $zipExt->getArchiveComment();
-            $folder = str_replace('%commit%', substr($comment, 0, 7), $folder);
-        }
         $extraction = $zipExt->extractSubdirTo($workingPath, $folder);
         if (!empty($extraction)) {
             throw new Exception(implode(', ', $extraction));
@@ -1434,44 +1434,6 @@ class Controller
         put($params['filePath'], $php);
         $this->code = 200;
         $this->response = 'Settings file OK';
-    }
-
-    public function submitInstallFormAction(array $params)
-    {
-        $installUrl = $this->runtime->rootUrl;
-        $missing = [];
-        $required = ['username', 'email', 'password', 'email_from_email', 'email_incoming_email', 'website_mode'];
-        if(PHP_SAPI === 'cli') {
-            $required[] = 'website';
-            $installUrl = rtrim($params['website'], '/') . '/';
-        }
-        foreach($required as $param) {
-            if(!isset($params[$param])) {
-                $missing[] = $param;
-            }
-        }
-        if($missing !== []) {
-            throw new InvalidArgumentException(sprintf('Missing %s', implode(', ', $missing)));
-        }
-        if(isDocker()) {
-            $installUrl = 'http://localhost/';
-        }
-        $installUrl .= 'install';
-        $post = $this->curl($installUrl, [
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($params),
-        ]);
-        if (!empty($post->json->error)) {
-            throw new Exception($post->json->error->message, $post->json->error->code);
-        }
-        if (preg_match('/system error/i', $post->raw)) {
-            throw new Exception('System error :(', 400);
-        }
-        if (preg_match('/<p class="highlight\s.*">(.*)<\/p>/', $post->raw, $post_errors)) {
-            throw new Exception(strip_tags(str_replace('<br><br>', ' ', $post_errors[1])), 400);
-        }
-        $this->code = 200;
-        $this->response = 'Setup complete';
     }
 
     /**
@@ -1665,16 +1627,6 @@ if(!empty($_POST)) {
             $params['user'] = $opts['u'] ?? null;
             $params['userPassword'] = $opts['x'] ?? null;
             $params['filePath'] = $opts['f'] ?? null;
-            break;
-        case 'submitInstallForm':            
-            $opts = getopt('a:w:u:e:x:f:i:m:');
-            $params['website'] = $opts['w'] ?? null;
-            $params['username'] = $opts['u'] ?? null;
-            $params['email'] = $opts['e'] ?? null;
-            $params['password'] = $opts['x'] ?? null;
-            $params['email_from_email'] = $opts['f'] ?? null;
-            $params['email_incoming_email'] = $opts['i'] ?? null;
-            $params['website_mode'] = $opts['m'] ?? null;
             break;
         case 'lock':
         case 'selfDestruct':
@@ -2117,8 +2069,7 @@ body.body--installing .flex-box .loader {
   transition-delay: 400ms;
 }
 
-.sel--chevereto .chevereto--hide,
-.sel--chevereto-free .chevereto-free--hide {
+.sel--chevereto .chevereto--hide {
   display: none;
 }
 
@@ -2374,10 +2325,6 @@ var installer = {
         this.popScreen(this.defaultScreen);
         this.history.replace(this.defaultScreen);
         if (page != "error") {
-            var inputEmailEls = document.querySelectorAll("input[type=email]");
-            for (let inputEmailEl of inputEmailEls) {
-                inputEmailEl.pattern = patterns.email_pattern;
-            }
             this.bindActions();
         }
         document.addEventListener(
@@ -2643,11 +2590,6 @@ var installer = {
             "| URL: " + runtime.rootUrl + "\\n" +
             "| Software: " + data.software + "\\n" +
             "| --" + "\\n" +
-            "| # Admin" + "\\n" +
-            "| Email: " + data.admin.email + "\\n" +
-            "| Username: " + data.admin.username + "\\n" +
-            "| Password: " + data.admin.password + "\\n" +
-            "| --" + "\\n" +
             "| # Database" + "\\n" +
             "| Host: " + data.db.host + "\\n" +
             "| Port: " + data.db.port + "\\n" +
@@ -2685,7 +2627,7 @@ var installer = {
             });
         },
         setSoftware: function (software) {
-            document.body.classList.remove("sel--chevereto", "sel--chevereto-free");
+            document.body.classList.remove("sel--chevereto");
             document.body.classList.add("sel--" + software);
             installer.data.software = software;
             installer.log("Software has been set to: " + software);
@@ -2693,7 +2635,6 @@ var installer = {
         },
         setUpgrade: function () {
             console.log("setUpgrade");
-            document.body.classList.remove("sel--chevereto-free");
             document.body.classList.add("sel--chevereto");
             var license = document.getElementById("upgradeKey").value;
             installer.checkLicense(license, {
@@ -2709,7 +2650,7 @@ var installer = {
         },
         cPanelProcess: function () {
             if (installer.isCpanelDone) {
-                installer.actions.show("admin");
+                installer.actions.show("ready");
                 return;
             }
             var els = {
@@ -2739,7 +2680,7 @@ var installer = {
                     }
                     installer.writeFormData("db", json.data.db);
                     installer.isCpanelDone = true;
-                    installer.actions.show("admin");
+                    installer.actions.show("ready");
                 });
         },
         setDb: function () {
@@ -2747,19 +2688,11 @@ var installer = {
             installer.fetch("checkDatabase", params, {
                 success: function (response, json) {
                     installer.writeFormData("db", params);
-                    installer.actions.show("admin");
+                    installer.actions.show("ready");
                 },
                 error: function (response, json) {
                 }
             });
-        },
-        setAdmin: function () {
-            installer.writeFormData("admin");
-            this.show("emails");
-        },
-        setEmails: function () {
-            installer.writeFormData("email");
-            this.show("ready");
         },
         setReadyUpgrade() {
             this.show("ready-upgrade");
@@ -2798,18 +2731,6 @@ var installer = {
                     installer.log("Creating app/settings.php file");
                     let = params = Object.assign({ filePath: runtime.absPath + "app/settings.php" }, installer.data.db)
                     return installer.fetch("createSettings", params);
-                })
-                .then(data => {
-                    installer.log("Performing system setup");
-                    let params = {
-                        username: installer.data.admin.username,
-                        email: installer.data.admin.email,
-                        password: installer.data.admin.password,
-                        email_from_email: installer.data.email.emailNoreply,
-                        email_incoming_email: installer.data.email.emailInbox,
-                        website_mode: \'community\',
-                    };
-                    return installer.fetch("submitInstallForm", params);
                 })
                 .then(data => {
                     installer.log(
@@ -2885,7 +2806,6 @@ if ("error" != document.querySelector("html").id) {
     <script>
         const appUrl = <?php echo json_encode(APP_URL); ?>;
         const runtime = <?php echo json_encode($jsVars); ?>;
-        const patterns = <?php echo json_encode($patterns); ?>;
         const useCpanel = true;
     </script>
 </head>
@@ -3007,9 +2927,9 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Database</h1>
-        <p>Chevereto requires MySQL 8 or MariaDB 10. Chevereto also supports MySQL 5.7.</p>
-        <?php if(isDocker()) { ?>
-        <p class="highlight">Database values are being provided using environment variables.</p>
+        <p>Chevereto requires MySQL 8 (5.7 min), MariaDB 10.</p>
+        <?php if(isDatabaseEnvProvided()) { ?>
+        <p class="highlight"><b>Note:</b> Database values are being automatically provided using environment variables.</p>
         <?php } ?>
         <?php
             function echoDatabaseEnv(string $env, string $default): void {
@@ -3066,64 +2986,9 @@ if ("error" != document.querySelector("html").id) {
           <div>
             <button class="action radius">
             <?php 
-                echo isDocker() ? 'Check' : 'Set';
+                echo isDatabaseEnvProvided() ? 'Check' : 'Set';
             ?> Database
             </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div id="screen-admin" class="screen animate animate--slow">
-    <div class="flex-box col-width">
-      <div>
-        <h1>Administrator</h1>
-        <p>Fill in your administrator user details. You can edit this account or add more administrators later.</p>
-        <form method="post" name="admin" data-trigger="setAdmin" autocomplete="off">
-          <p class="p alert"></p>
-          <div class="p input-label">
-            <label for="adminEmail">Email</label>
-            <input class="radius width-100p" type="email" name="adminEmail" id="adminEmail" placeholder="username@domain.com" autocomplete="off" required>
-            <div><small>Make sure that this email is working or you won't be able to recover the account if you lost the password.</small></div>
-          </div>
-          <div class="p input-label">
-            <label for="adminUsername">Username</label>
-            <input class="radius width-100p" type="text" name="adminUsername" id="adminUsername" placeholder="admin" pattern="<?php echo $patterns['username_pattern']; ?>" autocomplete="off" required>
-            <div><small>3 to 16 characters. Letters, numbers and underscore.</small></div>
-          </div>
-          <div class="p input-label">
-            <label for="adminPassword">Password</label>
-            <input class="radius width-100p" type="password" name="adminPassword" id="adminPassword" placeholder="password" pattern="<?php echo $patterns['user_password_pattern']; ?>" autocomplete="off" required>
-            <div><small>6 to 128 characters.</small></div>
-          </div>
-          <div>
-            <button class="action radius">Set administrator</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div id="screen-emails" class="screen animate animate--slow">
-    <div class="flex-box col-width">
-      <div>
-        <h1>Email addresses</h1>
-        <p>Fill in the email addresses that will be used by the system. You can edit this later.</p>
-        <form method="post" name="emails" data-trigger="setEmails">
-          <p class="p alert"></p>
-          <div class="p input-label">
-            <label for="no-reply">No-reply</label>
-            <input class="radius width-100p" type="email" name="emailNoreply" id="emailNoreply" placeholder="no-reply@domain.com" required>
-            <div><small>This address will be used as FROM email address when sending transactional emails (account functions, singup, alerts, etc.)</small></div>
-          </div>
-          <div class="p input-label">
-            <label for="inbox">Inbox</label>
-            <input class="radius width-100p" type="email" name="emailInbox" id="emailInbox" placeholder="inbox@domain.com" required>
-            <div><small>This address will be used to get contact form messages.</small></div>
-          </div>
-          <div>
-            <button class="action radius">Set emails</button>
           </div>
         </form>
       </div>
@@ -3134,11 +2999,10 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Ready to install</h1>
-        <p>The installer is ready to download and install the latest <span class="chevereto-free--hide">Chevereto</span><span class="chevereto--hide">Chevereto-Free</span> release in <code><?php echo $runtime->absPath; ?></code></p>
-        <p class="highlight chevereto-free--hide">By installing is understood that you accept the <a href="https://chevereto.com/license" target="_blank">Chevereto EULA</a>.</p>
-        <p class="highlight chevereto--hide">By installing is understood that you accept the Chevereto-Free <a href="<?php echo APPLICATIONS['chevereto-free']['url'] . '/blob/master/LICENSE'; ?>" target="_blank">MIT license</a>.</p>
+        <p>The installer is ready to download and install the latest Chevereto release in <code><?php echo $runtime->absPath; ?></code></p>
+        <p class="highlight">By installing is understood that you accept the <a href="https://chevereto.com/license" target="_blank">Chevereto EULA</a>.</p>
         <div>
-          <button class="action radius" data-action="install">Install <span class="chevereto-free--hide">Chevereto</span><span class="chevereto--hide">Chevereto-Free</span></button>
+          <button class="action radius" data-action="install">Install Chevereto</button>
         </div>
       </div>
     </div>
@@ -3183,14 +3047,13 @@ if ("error" != document.querySelector("html").id) {
     <div class="flex-box col-width">
       <div>
         <h1>Installation completed</h1>
-        <p>Chevereto has been installed. You can now login to your dashboard panel to configure your website to fit your needs.</p>
+        <p>You can now create your admin account and configure your website to fit your needs.</p>
         <p class="alert">Double-check if the installer file was removed from <code><?php echo INSTALLER_FILEPATH; ?></code></p>
         <p>Take note on the installation details below.</p>
         <div class="install-details p highlight font-size-80p"></div>
         <p>💖 Hope you enjoy using Chevereto.</p>
         <div>
-          <a class="button action radius" href="<?php echo $runtime->rootUrl; ?>dashboard" target="_blank">Open dashboard</a>
-          <a class="button radius" href="<?php echo $runtime->rootUrl; ?>" target="_blank">Open homepage</a>
+          <a class="button action radius" href="<?php echo $runtime->rootUrl; ?>" target="_blank">Open website</a>
         </div>
       </div>
     </div>
