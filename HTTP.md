@@ -46,4 +46,4 @@ If the server lacks the requirements for Chevereto it will throw a message like 
 
 ![requirements](src/requirements.png)
 
-Kindly note that these are server requirements errors, you need to tweak/fix your server to meet these requirements.
+Kindly note that these are **server requirements errors**, you need to tweak/fix your server to meet these requirements.
