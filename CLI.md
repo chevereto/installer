@@ -130,21 +130,10 @@ php installer.php -a createSettings \
     -f app/settings.php
 ```
 
-## submitInstallForm
+## lock
 
-Forwards the installation command to the Chevereto CLI shell command. This install the Chevereto database and its admin user.
-
-`-a submitInstallForm`
-
-| Parameter      | Option |
-| -------------- | ------ |
-| Admin Username | u      |
-| Admin Email    | e      |
-| Admin Password | x      |
+Creates a `installer.lock` file to prevent using the installer.
 
 ```sh
-php installer.php -a submitInstallForm \
-    -u user \
-    -e user@hostname.loc \
-    -x password \
+php installer.php -a lock
 ```
