@@ -47,3 +47,11 @@ If the server lacks the requirements for Chevereto it will throw a message like 
 ![requirements](src/requirements.png)
 
 Kindly note that these are **server requirements errors**, you need to tweak/fix your server to meet these requirements.
+
+## Nginx server rules
+
+You can generate Nginx server rules on the fly with HTTP GET.
+
+```text
+GET /installer.php?getNginxRules HTTP/1.1
+```

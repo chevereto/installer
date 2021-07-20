@@ -16,7 +16,7 @@ The Installer is a single `.php` file that installs Chevereto. It is an API clie
 
 ## Features
 
-This tool offers:
+The Chevereto installer does:
 
 - HTTP / CLI API
 - Checks for system requirements
@@ -30,10 +30,3 @@ This tool offers:
 - [HTTP API](HTTP.md)
 - [CLI API](CLI.md)
 
-## Nginx server rules
-
-You can generate Nginx server rules on the fly with HTTP GET.
-
-```text
-GET /installer.php?getNginxRules HTTP/1.1
-```
