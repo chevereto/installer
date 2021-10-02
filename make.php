@@ -97,6 +97,6 @@ class Make
     {
         put($filepath, $contents);
         echo '[OK] ' . $filepath . "\n";
-        exit(1);
+        exit(0);
     }
 }
