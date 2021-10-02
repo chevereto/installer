@@ -11,10 +11,6 @@
 
 The Installer is a single `.php` file that installs Chevereto. It is an API client which interacts with `chevereto.com` API for providing Chevereto installation.
 
-## Requirements
-
-* Inherits **all** the [Chevereto Requirements](https://v3-docs.chevereto.com/setup/server/requirements.html).
-
 ## Features
 
 * HTTP / CLI API
