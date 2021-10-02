@@ -93,6 +93,9 @@ if(!empty($_POST)) {
     $params = $_POST;
 } else if(!empty($opts)) {
     $action = $opts['a'];
+    if(is_array($action)) {
+        $action = $action[0];
+    }
     $params = ['action' => $action];
     switch($action) {
         case 'checkLicense':
@@ -108,7 +111,7 @@ if(!empty($_POST)) {
             $params['userPassword'] = $opts['x'] ?? null;
             break;
         case 'download':            
-            $opts = getopt('a:t::l::');
+            $opts = getopt('a:t:l:');
             $params['tag'] = $opts['t'] ?? null;
             $params['license'] = $opts['l'] ?? null;
             break;
