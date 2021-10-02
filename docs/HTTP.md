@@ -14,14 +14,6 @@ To use the Installer you will require a Chevereto License. In this screen you ne
 
 ![license](src/license.png)
 
-## cPanel (optional)
-
-If you are running a cPanel based server you can one-time connect the Installer to your cPanel API for automatic database setup.
-
-![cpanel](src/cpanel.png)
-
-You can skip this if you aren't using a cPanel based server or if you want to manually provide the database.
-
 ## Database
 
 Here you need to provide the database credentials for database required for Chevereto.

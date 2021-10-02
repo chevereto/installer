@@ -25,23 +25,6 @@ Checks Chevereto license status. Note that a valid license will be required at [
 php installer.php -a checkLicense -l=LICENSE_KEY
 ```
 
-### cPanelProcess
-
-Creates a database, database user and grant privileges. This is only available for cPanel based servers.
-
-`-a cPanelProcess`
-
-| Parameter       | Option |
-| --------------- | ------ |
-| cPanel User     | u      |
-| cPanel Password | x      |
-
-```sh
-php installer.php -a cPanelProcess \
-    -u user \
-    -x password
-```
-
 ### checkDatabase
 
 Checks database credentials and privileges. Note that an empty database is required.
@@ -73,13 +56,11 @@ Download the target Chevereto software. Note that the license must be active to 
 
 | Parameter | Options |
 | --------- | ------- |
-| Software  | s       |
 | Tag       | t       |
 | License   | l       |
 
 ```sh
 php installer.php -a download \
-    -s chevereto \
     -t=latest \
     -l=LICENSE_KEY
 ```
@@ -94,13 +75,11 @@ Extract the downloaded software file (filePath) in the target working path (abso
 
 | Parameter   | Option |
 | ----------- | ------ |
-| Software    | s      |
 | WorkingPath | p      |
 | FilePath    | f      |
 
 ```sh
 php installer.php -a extract \
-    -s chevereto \
     -p /var/www/html/ \
     -f chevereto-pkg-*.zip
 ```
