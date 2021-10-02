@@ -13,10 +13,7 @@ jobs:
         operating-system: [ubuntu-latest]
         php-versions: ["7.4"]
     env:
-      extensions: opcache, mbstring, ds, pcov, imagick, bcmath
-      tools: composer
-      ini-values: opcache.enable_cli = 1, precision=16, default_charset='UTF-8', pcov.directory=src
-      key: cache-1633188311333
+      key: cache-1633188971720
     name: Release on PHP ${{ matrix.php-versions }} ${{ matrix.operating-system }}
     steps:
       - name: Checkout
@@ -27,24 +24,12 @@ jobs:
         uses: shivammathur/cache-extensions@v1
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: ${{ env.extensions }}
           key: ${{ env.key }}
-
-      - name: Cache extensions
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.extcache.outputs.dir }}
-          key: ${{ steps.extcache.outputs.key }}
-          restore-keys: ${{ steps.extcache.outputs.key }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: ${{ env.extensions }}
-          ini-values: ${{ env.ini-values }}
-          coverage: pcov
-          tools: ${{ env.tools }}
         env:
           fail-fast: true
 
