@@ -6,7 +6,11 @@
 
 ## How to use it
 
-* Upload the `installer.php` file to your target folder
+* Upload the `installer.php` file to your target folder.
+
+```sh
+curl -S -o installer.php -L "https://github.com/chevereto/installer/releases/download/$TAG/installer.php"
+```
 
 | API  | Location                                  |
 | ---- | ----------------------------------------- |
