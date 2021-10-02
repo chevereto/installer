@@ -47,7 +47,7 @@ final class Controller
                         '%provided%' => $post->json->data->version,
                     ]
                 ),
-                404);
+                400);
         }
         $this->response = 200 == $this->code
             ? 'Valid license key'
