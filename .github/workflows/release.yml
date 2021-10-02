@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ["8.0"]
+    env:
+      extensions: opcache, mbstring, ds, pcov, imagick, bcmath
+      tools: composer
+      ini-values: opcache.enable_cli = 1, precision=16, default_charset='UTF-8', pcov.directory=src
+      key: cache-1633188311333
+    name: Release on PHP ${{ matrix.php-versions }} ${{ matrix.operating-system }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup cache environment
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: ${{ env.extensions }}
+          key: ${{ env.key }}
+
+      - name: Cache extensions
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: ${{ env.extensions }}
+          ini-values: ${{ env.ini-values }}
+          coverage: pcov
+          tools: ${{ env.tools }}
+        env:
+          fail-fast: true
+
+      - name: Build
+        run: php make.php
+
+      - name: Upload artifact
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          removeArtifacts: true
+          artifacts: "build/installer.php"
+          token: ${{ secrets.GITHUB_TOKEN }}
