@@ -15,10 +15,10 @@
 declare(strict_types=1);
 
 const APP_NAME = 'Chevereto Installer';
-const APP_VERSION = '3.0.0';
+const APP_VERSION = '4.0.0';
 const APP_URL = 'https://github.com/chevereto/installer';
-const PHP_VERSION_MIN = '7.4';
-const PHP_VERSION_RECOMMENDED = '7.4';
+const PHP_VERSION_MIN = '8.0';
+const PHP_VERSION_RECOMMENDED = '8.0';
 const VENDOR = [
     'name' => 'Chevereto',
     'url' => 'https://chevereto.com',
@@ -27,7 +27,7 @@ const VENDOR = [
 ];
 const APPLICATION = [
     'name' => 'Chevereto',
-    'version' => '3',
+    'version' => '4',
     'license' => 'Paid',
     'url' => 'https://chevereto.com',
     'zipball' => 'https://chevereto.com/api/download/%tag%',
@@ -120,7 +120,7 @@ if(!empty($_POST)) {
             $params['workingPath'] = $opts['p'] ?? null;
             $params['filePath'] = $opts['f'] ?? null;
             break;
-        case 'createSettings':            
+        case 'createEnv':            
             $opts = getopt('a:h:p:n:u:x:f:');
             $params['host'] = $opts['h'] ?? null;
             $params['port'] = $opts['p'] ?? null;

@@ -410,9 +410,9 @@ var installer = {
             installer
                 .fetchCommonInit()
                 .then(data => {
-                    installer.log("Creating app/settings.php file");
-                    let = params = Object.assign({ filePath: runtime.absPath + "app/settings.php" }, installer.data.db)
-                    return installer.fetch("createSettings", params);
+                    installer.log("Creating .env file");
+                    let = params = Object.assign({ filePath: runtime.absPath + ".env" }, installer.data.db)
+                    return installer.fetch("createEnv", params);
                 })
                 .then(data => {
                     installer.log(

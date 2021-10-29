@@ -84,29 +84,29 @@ php installer.php -a extract \
     -f chevereto-pkg-*.zip
 ```
 
-## createSettings
+## createEnv
 
-Generates `app/settings.php` containing the database details.
+Generates the `.env` file containing the database environment variables.
 
-`-a createSettings`
+`-a createEnv`
 
-| Parameter              | Option |
-| ---------------------- | ------ |
-| Database Host          | h      |
-| Database Port          | p      |
-| Database Name          | n      |
-| Database User          | u      |
-| Database User Password | x      |
-| Filepath               | f      |
+| Parameter                  | Option |
+| -------------------------- | ------ |
+| DB Host                    | h      |
+| DB Port                    | p      |
+| DB Name                    | n      |
+| DB User                    | u      |
+| DB User Password           | x      |
+| Filepath for the .env file | f      |
 
 ```sh
-php installer.php -a createSettings \
+php installer.php -a createEnv \
     -h localhost \
     -p 3306 \
     -n db_name \
     -u db_user \
     -x db_password \
-    -f app/settings.php
+    -f .env
 ```
 
 ## lock

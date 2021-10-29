@@ -167,29 +167,30 @@ final class Controller
         $this->response = strtr('Extraction completed (%n files in %ss)', ['%n' => $numFiles, '%s' => $timeTaken]);
     }
 
-    public function createSettingsAction(array $params): void
+    public function createEnvAction(array $params): void
     {
         if(!isset($params['filePath'])) {
             throw new InvalidArgumentException('Missing filePath');
         }
-        $settings = [];
+        $env = [];
         foreach ($params as $k => $v) {
-            $settings["%$k%"] = $v;
+            $env["%$k%"] = $v;
         }
-        $template = '<' . "?php
-\$settings['db_host'] = '%host%';
-\$settings['db_port'] = '%port%';
-\$settings['db_name'] = '%name%';
-\$settings['db_user'] = '%user%';
-\$settings['db_pass'] = '%userPassword%';
-\$settings['db_table_prefix'] = 'chv_';
-\$settings['db_driver'] = 'mysql';
-\$settings['db_pdo_attrs'] = [];
-\$settings['debug_level'] = 1;";
-        $php = strtr($template, $settings);
+        $template = <<<EOT
+CHEVERETO_DB_DRIVER=mysql
+CHEVERETO_DB_HOST=%host%
+CHEVERETO_DB_NAME=%name%
+CHEVERETO_DB_PASS=%userPassword%
+CHEVERETO_DB_PDO_ATTRS='[]'
+CHEVERETO_DB_PORT=%port%
+CHEVERETO_DB_TABLE_PREFIX=chv_
+CHEVERETO_DB_USER=%user%
+
+EOT;
+        $php = strtr($template, $env);
         put($params['filePath'], $php);
         $this->code = 200;
-        $this->response = 'Settings file OK';
+        $this->response = 'Dotenv file OK';
     }
 
     public function downloadFile(string $url, array $params, string $filePath, bool $post = true): object
