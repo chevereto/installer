@@ -169,3 +169,10 @@ function get_bytes($size, $cut = null)
     $pow_factor = array_search($suffix, $units) + 1;
     return $number * pow(strlen($suffix) == 2 ? 1000 : 1024, $pow_factor);
 }
+function echoDatabaseEnv(string $env, string $default): void {
+    echo 'placeholder="' . $default . '" ';
+    $getEnv = getenv($env);
+    if($getEnv !== false) {
+        echo 'value="' . getenv($env) .'" readonly';
+    }
+}

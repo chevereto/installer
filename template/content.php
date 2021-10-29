@@ -49,7 +49,7 @@
         <p class="p alert"></p>
         <div class="p input-label">
           <label for="installKey">License key</label>
-          <input class="radius width-100p" type="password" name="installKey" id="installKey" placeholder="Paste your V<?php echo APPLICATION['version']; ?> license key here" autofill="off" autocomplete="off">
+          <input class="width-100p" type="password" name="installKey" id="installKey" placeholder="Paste your V<?php echo APPLICATION['version']; ?> license key here" autofill="off" autocomplete="off">
           <div><small>You can find the license key at your <a href="https://chevereto.com/panel/license" target="_blank">client panel</a>.</small></div>
         </div>
         <div>
@@ -71,7 +71,7 @@
         <p class="p alert"></p>
         <div class="p input-label">
           <label for="upgradeKey">License key</label>
-          <input class="radius width-100p" type="password" name="upgradeKey" id="upgradeKey" placeholder="Paste your V<?php echo APPLICATION['version']; ?> license key here">
+          <input class="width-100p" type="password" name="upgradeKey" id="upgradeKey" placeholder="Paste your V<?php echo APPLICATION['version']; ?> license key here">
           <div><small>You can find the license key at your <a href="https://chevereto.com/panel/license" target="_blank">client panel</a>.</small></div>
         </div>
         <div>
@@ -90,20 +90,11 @@
         <?php if(isDatabaseEnvProvided()) { ?>
         <p class="highlight"><b>Note:</b> ✨ Database values are being automatically provided using environment variables.</p>
         <?php } ?>
-        <?php
-            function echoDatabaseEnv(string $env, string $default): void {
-                echo 'placeholder="' . $default . '" ';
-                $getEnv = getenv($env);
-                if($getEnv !== false) {
-                    echo 'value="' . getenv($env) .'" readonly';
-                }
-            }
-        ?>
         <form method="post" name="database" data-trigger="setDb" autocomplete="off">
           <p class="p alert"></p>
           <div class="p input-label">
             <label for="dbHost">Host</label>
-            <input class="radius width-100p" type="text" name="dbHost" id="dbHost"
+            <input class="width-100p" type="text" name="dbHost" id="dbHost"
             <?php
                 echoDatabaseEnv('CHEVERETO_DB_HOST', 'Hostname or IP');
             ?>
@@ -111,7 +102,7 @@
           </div>
           <div class="p input-label">
             <label for="dbPort">Port</label>
-            <input class="radius width-100p" type="number" name="dbPort" id="dbPort"
+            <input class="width-100p" type="number" name="dbPort" id="dbPort"
             <?php
                 echoDatabaseEnv('CHEVERETO_DB_PORT', '3306');
             ?>
@@ -119,7 +110,7 @@
           </div>
           <div class="p input-label">
             <label for="dbName">Name</label>
-            <input class="radius width-100p" type="text" name="dbName" id="dbName"
+            <input class="width-100p" type="text" name="dbName" id="dbName"
             <?php
                 echoDatabaseEnv('CHEVERETO_DB_NAME', 'Database name');
             ?>
@@ -127,7 +118,7 @@
           </div>
           <div class="p input-label">
             <label for="dbUser">User</label>
-            <input class="radius width-100p" type="text" name="dbUser" id="dbUser"
+            <input class="width-100p" type="text" name="dbUser" id="dbUser"
             <?php
                 echoDatabaseEnv('CHEVERETO_DB_USER', 'Database username');
             ?>
@@ -136,7 +127,7 @@
           </div>
           <div class="p input-label">
             <label for="dbUserPassword">User password</label>
-            <input class="radius width-100p" type="password" name="dbUserPassword" id="dbUserPassword"
+            <input class="width-100p" type="password" name="dbUserPassword" id="dbUserPassword"
             <?php
                 echoDatabaseEnv('CHEVERETO_DB_PASS', 'Database username password');
             ?>

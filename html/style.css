@@ -192,14 +192,22 @@ button,
 .button {
     font-family: Helvetica, Arial, sans-serif;
     padding: 10px;
-    border: 1px solid rgba(0, 0, 0, .2);
-    background: #FFF;
-    color: rgba(0, 0, 0, .8);
+    color: #000;
+}
+
+input {
+    border: 1px solid rgba(0, 0, 0, .1);
+    background: transparent;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    padding-left: 0;
+    transition: border-width 1s linear;
 }
 
 input:focus,
 select:focus {
-    border-color: #3498db;
+    border-bottom-color: #3498db;
 }
 
 /* Go home Chrome, you are drunk */
@@ -229,14 +237,13 @@ button,
     cursor: pointer;
     text-shadow: 1px 1px 0 rgba(255, 255, 255, .1);
     text-decoration: none;
+    border: 0;
+    background-color: rgba(0, 0, 0, .05);
 }
 
 button:hover,
-button:focus,
-.button:hover,
-.button:focus {
+.button:hover {
     text-decoration: none;
-    background-color: rgba(0, 0, 0, .05);
 }
 
 button:active,
@@ -249,15 +256,7 @@ button.action,
 .button.action {
     text-shadow: 1px 1px 0 rgba(0, 0, 0, .05);
     color: #FFF;
-    border-color: #27ae60;
-    background: #27ae60;
-}
-
-button.action:hover,
-button.action:focus,
-.button.action:hover,
-.button.action:focus {
-    background: #2ecc71;
+    background: #2980b9;
 }
 
 button[disabled],
@@ -267,14 +266,6 @@ input[disabled] {
 
 input[data-disabled] {
     cursor: not-allowed;
-}
-
-input {
-    background: #FFF;
-}
-
-input[disabled] {
-    background: #ecf0f1;
 }
 
 .input-label label {
@@ -290,7 +281,7 @@ h1 {
 code {
     font-size: 0.9em;
     font-family: monospace;
-    background: #ecf0f1;
+    background: rgba(0, 0, 0, .1);
 }
 
 .pre {
@@ -331,7 +322,7 @@ code {
 
 .flex-box .loader {
     display: inline-block;
-    border: .15em solid #ecf0f1;
+    border: .15em solid rgb(52 152 219 / 20%);
     border-top: .15em solid #3498db;
     border-radius: 50%;
     width: 1em;
@@ -430,7 +421,9 @@ body.body--installing .flex-box .loader {
 }
 
 .flex-box {
-    background: #FFF;
+    background: rgba(255, 255, 255, .8);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
     background-size: cover;
     background-position: center;
     box-shadow: 0 5px 20px 0 rgba(0, 0, 0, .2);
