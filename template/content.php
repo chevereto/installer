@@ -171,7 +171,7 @@
     <div class="flex-box col-width">
       <div>
         <h1>Ready to upgrade</h1>
-        <p>The installer is ready to download and upgrade to the latest Chevereto release in <code><?php echo $runtime->absPath; ?></code></p>
+        <p>The installer is ready to download and upgrade to the latest <?php echo APPLICATION_FULL_NAME; ?> release in <code><?php echo $runtime->absPath; ?></code></p>
         <p class="highlight">By upgrading is understood that you accept the <a href="https://chevereto.com/license" target="_blank">Chevereto EULA</a>.</p>
         <div>
           <button class="action radius" data-action="upgrade">Upgrade to <?php echo APPLICATION_FULL_NAME; ?></button>
