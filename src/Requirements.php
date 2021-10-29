@@ -2,24 +2,13 @@
 
 final class Requirements
 {
-    public array $phpVersions;
 
-    public array $phpExtensions;
-
-    public array $phpClasses;
-
-    public function __construct(array $phpVersions)
+    public function __construct(
+        public string $phpMinimum,
+        public string $phpRecommended,
+        public array $phpExtensions,
+        public array $phpClasses
+    )
     {
-        $this->phpVersions = $phpVersions;
-    }
-
-    public function setPHPExtensions(array $phpExtensions)
-    {
-        $this->phpExtensions = $phpExtensions;
-    }
-
-    public function setPHPClasses(array $phpClasses)
-    {
-        $this->phpClasses = $phpClasses;
     }
 }

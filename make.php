@@ -1,25 +1,14 @@
 <?php
 /* --------------------------------------------------------------------
 
-    Chevereto Installer : Make
+    Chevereto Installer
     http://chevereto.com/
 
-      /$$$$$$  /$$                                                           /$$
-     /$$__  $$| $$                                                          | $$
-    | $$  \__/| $$$$$$$   /$$$$$$  /$$    /$$ /$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$    /$$$$$$
-    | $$      | $$__  $$ /$$__  $$|  $$  /$$//$$__  $$ /$$__  $$ /$$__  $$|_  $$_/   /$$__  $$
-    | $$      | $$  \ $$| $$$$$$$$ \  $$/$$/| $$$$$$$$| $$  \__/| $$$$$$$$  | $$    | $$  \ $$
-    | $$    $$| $$  | $$| $$_____/  \  $$$/ | $$_____/| $$      | $$_____/  | $$ /$$| $$  | $$
-    |  $$$$$$/| $$  | $$|  $$$$$$$   \  $/  |  $$$$$$$| $$      |  $$$$$$$  |  $$$$/|  $$$$$$/
-     \______/ |__/  |__/ \_______/    \_/    \_______/|__/       \_______/   \___/   \______/
-
-
-    Creates a single-file version of this installer.
-
-    Command: php make.php
-    Output: output/installer.php
-
-    This make is very basic and doesn't work with sub-includes and is very sensitive to quotes and whatnot.
+    @author	Rodolfo Berrios A. <http://rodolfoberrios.com/>
+          __                        __     
+     ____/ /  ___ _  _____ _______ / /____ 
+    / __/ _ \/ -_) |/ / -_) __/ -_) __/ _ \ 
+    \__/_//_/\__/|___/\__/_/  \__/\__/\___/
 
   --------------------------------------------------------------------- */
 
@@ -31,8 +20,7 @@ new Make('app.php', 'build/installer.php');
 
 class Make
 {
-    /** @var string */
-    public $contents;
+    public string $contents;
 
     public function __construct(string $sourceFilepath, string $targetFilepath)
     {

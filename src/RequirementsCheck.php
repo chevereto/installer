@@ -34,8 +34,8 @@ final class RequirementsCheck
 
     public function __construct(Requirements $requirements, Runtime $runtime)
     {
-        $this->checkPHPVersion($requirements->phpVersions);
-        $this->checkPHPProfile($requirements->phpExtensions, $requirements->phpClasses);
+        $this->checkPHPVersion($requirements);
+        $this->checkPHPProfile($requirements);
         $this->checkWorkingPaths($runtime->workingPaths);
         $this->checkFileUploads();
         $this->checkApacheModRewrite();
@@ -60,18 +60,18 @@ final class RequirementsCheck
         }
     }
 
-    public function checkPHPVersion(array $phpVersions): void
+    public function checkPHPVersion(Requirements $requirements): void
     {
-        if (version_compare(PHP_VERSION, $phpVersions[0], '<')) {
-            $this->addMissing('PHP', 'https://php.net', 'Use a newer %l version (%c ' . $phpVersions[0] . ' required, ' . $phpVersions[1] . ' recommended)');
+        if (version_compare(PHP_VERSION, $requirements->phpMinimum, '<')) {
+            $this->addMissing('PHP', 'https://php.net', 'Use a newer %l version (%c ' . $requirements->phpMinimum . ' required, ' . $requirements->phpRecommended . ' recommended)');
         }
     }
 
-    public function checkPHPProfile(array $extensions, array $classes): void
+    public function checkPHPProfile(Requirements $requirements): void
     {
         $core = array(
-            'extensions' => array_intersect_key(static::EXTENSIONS_MAP, array_flip($extensions)),
-            'classes' => array_intersect_key(static::CLASSES_MAP, array_flip($classes)),
+            'extensions' => array_intersect_key(static::EXTENSIONS_MAP, array_flip($requirements->phpExtensions)),
+            'classes' => array_intersect_key(static::CLASSES_MAP, array_flip($requirements->phpClasses)),
         );
 
         $nouns = array(

@@ -2,10 +2,6 @@
 
 final class Runtime
 {
-    public array $settings;
-
-    private Logger $logger;
-
     public string $absPath;
 
     public string $relPath;
@@ -22,14 +18,11 @@ final class Runtime
 
     public array $workingPaths;
 
-    public function __construct(Logger $logger)
+    public function __construct(
+        public array $settings,
+        private Logger $logger
+    )
     {
-        $this->logger = $logger;
-    }
-
-    public function setSettings(array $settings): void
-    {
-        $this->settings = $settings;
     }
 
     public function setServer(array $server): void
