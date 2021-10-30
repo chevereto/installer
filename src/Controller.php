@@ -106,7 +106,10 @@ final class Controller
         }
         $isPost = false;
         $zipBall = APPLICATION['zipball'];
-        $tag = $params['tag'] ?? 'latest';
+        if($params['tag'] === 'latest') {
+            $params['tag'] = '4';
+        }
+        $tag = $params['tag'] ?? '4';
         $zipBall = str_replace('%tag%', $tag, $zipBall);
         $isPost = true;
         $curl = $this->downloadFile($zipBall, $params, $filePath, $isPost);
@@ -155,14 +158,13 @@ final class Controller
             )), 503);
         }
         $numFiles = $zipExt->numFiles - 1;
-        $folder = $software['folder'];
-        $extraction = $zipExt->extractSubDirTo($workingPath, $folder);
-        if (!empty($extraction)) {
-            throw new Exception(implode(', ', $extraction));
+        $extraction = $zipExt->extractTo($workingPath);
+        if (!$extraction) {
+            throw new Exception("Unable to extract to");
         }
         $zipExt->close();
         $timeTaken = round(microtime(true) - $timeStart, 2);
-        @unlink($filePath);
+        unlink($filePath);
         $this->code = 200;
         $this->response = strtr('Extraction completed (%n files in %ss)', ['%n' => $numFiles, '%s' => $timeTaken]);
     }
@@ -177,13 +179,10 @@ final class Controller
             $env["%$k%"] = $v;
         }
         $template = <<<EOT
-CHEVERETO_DB_DRIVER=mysql
 CHEVERETO_DB_HOST=%host%
 CHEVERETO_DB_NAME=%name%
 CHEVERETO_DB_PASS=%userPassword%
-CHEVERETO_DB_PDO_ATTRS='[]'
 CHEVERETO_DB_PORT=%port%
-CHEVERETO_DB_TABLE_PREFIX=chv_
 CHEVERETO_DB_USER=%user%
 
 EOT;
