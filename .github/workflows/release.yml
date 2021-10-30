@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ["7.4"]
+        php-versions: ["8.0"]
     name: Release on PHP ${{ matrix.php-versions }} ${{ matrix.operating-system }}
     steps:
       - name: Checkout
@@ -25,7 +25,7 @@ jobs:
           fail-fast: true
 
       - name: Build
-        run: php make.php
+        run: php src/build.php
 
       - name: Upload artifact
         uses: ncipollo/release-action@v1

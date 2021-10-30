@@ -14,15 +14,14 @@
 
 declare(strict_types=1);
 
-include 'src/functions.php';
-
-new Make('app.php', 'build/installer.php');
-
 class Make
 {
     public string $contents;
 
-    public function __construct(string $sourceFilepath, string $targetFilepath)
+    public function __construct(
+        private string $sourceFilepath,
+        private string $targetFilepath
+    )
     {
         $this->sourceFilepath = $sourceFilepath;
         $this->targetFilepath = $targetFilepath;
