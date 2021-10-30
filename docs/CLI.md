@@ -61,7 +61,7 @@ Download the target Chevereto software. Note that the license must be active to 
 
 ```sh
 php installer.php -a download \
-    -t=latest \
+    -t=4 \
     -l=LICENSE_KEY
 ```
 
@@ -69,7 +69,7 @@ You can check the license with the [checkLicense](#checkLicense) action.
 
 ### extract
 
-Extract the downloaded software file (filePath) in the target working path (absolute paths).
+Extract the downloaded software file (FilePath) in the target path (WorkingPath).
 
 `-a extract`
 
