@@ -85,15 +85,30 @@ final class Controller
         }
     }
 
-    public function selfDestructAction(): void
+    public function selfDestructAction(array $params): void
     {
-        unlink(INSTALLER_FILEPATH);
-        if(!file_exists(LOCK_FILEPATH)) {
+        $workingPath = $params['workingPath'];
+        $installerFilepath = $params['installerFilepath'];
+        $indexFilePath = $workingPath . 'index.php';
+        if (!file_exists($workingPath)) {
+            throw new Exception(sprintf("Working path %s doesn't exists", $workingPath), 503);
+        }
+        $backupFilePath = $workingPath . 'index.chevereto.php';
+        if (!is_readable($backupFilePath)) {
+            throw new Exception(sprintf("Can't read %s", basename($backupFilePath)), 503);
+        }
+        rename($backupFilePath, $indexFilePath);
+        clearstatcache(true, $indexFilePath);
+        if(unlink($installerFilepath)) {
+            $installerErrorLog = $workingPath . 'installer.error.log';
+            if(file_exists($installerErrorLog)) {
+                unlink($installerErrorLog);
+            }
             $this->code = 200;
-            $this->response = 'installer destroyed';
+            $this->response = 'Installer destroyed';
         } else {
             $this->code = 500;
-            $this->response = 'unable to destroy installer';
+            $this->response = sprintf('Unable to destroy installer at %s', $installerFilepath);
         }
     }
 
@@ -166,6 +181,13 @@ final class Controller
         $zipExt->close();
         $timeTaken = round(microtime(true) - $timeStart, 2);
         @unlink($filePath);
+        $indexFilePath = $workingPath . 'index.php';
+        $backupFilePath = $workingPath . 'index.chevereto.php';
+        rename($indexFilePath, $backupFilePath);
+        copy(INSTALLER_FILEPATH, $workingPath . INSTALLER_FRONT_BASENAME);
+        clearstatcache(true, $indexFilePath);
+        $this->code = 200;
+        $this->response = strtr('Extraction completed %n files in %ss', ['%n' => $numFiles, '%s' => $timeTaken]);
         $this->code = 200;
         $this->response = strtr('Extraction completed (%n files in %ss)', ['%n' => $numFiles, '%s' => $timeTaken]);
     }
