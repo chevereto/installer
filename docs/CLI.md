@@ -69,7 +69,7 @@ You can check the license with the [checkLicense](#checkLicense) action.
 
 ### extract
 
-Extract the downloaded software file (filePath) in the target working path (absolute paths).
+Extract the downloaded software file (-f) in the target path (-p).
 
 `-a extract`
 
@@ -83,6 +83,8 @@ php installer.php -a extract \
     -p /var/www/html/ \
     -f chevereto-pkg-*.zip
 ```
+
+**Note**: The installer will backup the extracted `index.php` Chevereto front-controller as `index.chevereto.php` in the target working path (-p). This can be restored by running [selfDestruct](#selfdestruct) action.
 
 ## createSettings
 
@@ -115,4 +117,21 @@ Creates a `installer.lock` file to prevent using the installer.
 
 ```sh
 php installer.php -a lock
+```
+
+## selfDestruct
+
+Destructs the installer file (-f) and restore the `index.chevereto.php` file as `index.php` front controller in the working path (-p).
+
+`-a selfDestruct`
+
+| Parameter   | Option |
+| ----------- | ------ |
+| WorkingPath | p      |
+| FilePath    | f      |
+
+```sh
+php installer.php -a selfDestruct \
+    -p /var/www/html/ \
+    -f /var/www/html/installer.php
 ```

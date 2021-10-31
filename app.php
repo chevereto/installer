@@ -130,8 +130,12 @@ if(!empty($_POST)) {
             $params['userPassword'] = $opts['x'] ?? null;
             $params['filePath'] = $opts['f'] ?? null;
             break;
-        case 'lock':
         case 'selfDestruct':
+            $opts = getopt('a:p:f:');
+            $params['workingPath'] = $opts['p'] ?? null;
+            $params['installerFilepath'] = $opts['f'] ?? null;
+            break;
+        case 'lock':
             break;
     }
 }
