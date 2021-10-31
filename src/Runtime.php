@@ -6,7 +6,11 @@ final class Runtime
 
     public string $relPath;
 
+    public string $installerBasename;
+
     public string $installerFilepath;
+
+    public string $installerFrontBasename;
 
     public string $httpHost;
 
@@ -66,8 +70,9 @@ final class Runtime
         $this->php = phpversion();
         $this->absPath = rtrim(str_replace('\\', '/', dirname(INSTALLER_FILEPATH)), '/') . '/';
         $this->relPath = rtrim(dirname($this->server['SCRIPT_NAME']), '\/') . '/';
-        $this->installerFilename = basename(INSTALLER_FILEPATH);
+        $this->installerBasename = basename(INSTALLER_FILEPATH);
         $this->installerFilepath = INSTALLER_FILEPATH;
+        $this->installerFrontBasename = INSTALLER_FRONT_BASENAME;
         $this->httpHost = $this->server['HTTP_HOST'] ?? 'null';
         $this->serverSoftware = $this->server['SERVER_SOFTWARE'] ?? 'null';
         $httpProtocol = 'http';

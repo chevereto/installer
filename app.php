@@ -36,6 +36,7 @@ const APPLICATION = [
 ];
 const APPLICATION_FULL_NAME = APPLICATION['name'] . ' V' . APPLICATION['version'];
 const INSTALLER_FILEPATH = __FILE__;
+const INSTALLER_FRONT_BASENAME = 'index.php';
 const LOCK_FILEPATH = __DIR__ . '/installer.lock';
 $phpSettings = [
     'error_reporting' => E_ALL ^ E_NOTICE,

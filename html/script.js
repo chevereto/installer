@@ -1,6 +1,5 @@
 var onLeaveMessage =
     "The installation is not yet completed. Are you sure that you want to leave?";
-
 var page = document.documentElement.getAttribute("id");
 var screenEls = document.querySelectorAll(".screen");
 var screens = {};
@@ -46,6 +45,7 @@ function escapeHtml(unsafe) {
 
 var installer = {
     uid: false,
+    isExtracted: false,
     data: {},
     isUpgradeToPaid: locationHasParameter("UpgradeToPaid"),
     process: "install",
@@ -221,11 +221,13 @@ var installer = {
                 callback[value] = installer[callbackFn];
             }
         });
-        return fetch(runtime.installerFilename, {
-            method: "POST",
-            body: data
-        })
-            .then(function (response) {
+        return fetch(
+                this.isExtracted ? runtime.relPath : runtime.installerBasename,
+                {
+                    method: "POST",
+                    body: data
+                }
+            ).then(function (response) {
                 return response.text();
             })
             .then(text => {
@@ -290,6 +292,9 @@ var installer = {
                 software: installer.data.software,
                 filePath: json.data.filePath,
                 workingPath: runtime.absPath,
+            })
+            .then(json => {
+                installer.isExtracted = true;
             });
     },
     fetchOnError: function (data) {
@@ -302,17 +307,10 @@ var installer = {
     },
     fetchCommonInit: function () {
         return this
-            .fetch("download", {
-                license: "data" in installer && "license" in installer.data ? installer.data.license : ''
-            })
+            .downloadLatest()
             .then(json => {
-                installer.log("Extracting " + json.data.fileBasename);
                 return installer
-                    .fetch("extract", {
-                        software: installer.data.software,
-                        filePath: json.data.filePath,
-                        workingPath: runtime.absPath,
-                    });
+                    .extractDownload(json);
             });
     },
     fillInstallDetails: function (data) {
@@ -322,7 +320,7 @@ var installer = {
             "| URL: " + runtime.rootUrl + "\n" +
             "| Software: " + data.software + "\n" +
             "| --" + "\n" +
-            "| # Database" + "\n" +
+            "| Database" + "\n" +
             "| Host: " + data.db.host + "\n" +
             "| Port: " + data.db.port + "\n" +
             "| Name: " + data.db.name + "\n" +
@@ -408,7 +406,11 @@ var installer = {
                     installer.log(
                         "Removing installer file at " + runtime.installerFilepath
                     );
-                    return installer.fetch("selfDestruct", null);
+                    return installer.
+                        fetch("selfDestruct", {
+                            workingPath: runtime.absPath,
+                            installerFilepath: runtime.installerFilepath,
+                        });
                 })
                 .then(data => {
                     installer.setBodyInstalling(false);
@@ -432,7 +434,11 @@ var installer = {
                     installer.log(
                         "Removing installer file at " + runtime.installerFilepath
                     );
-                    return installer.fetch("selfDestruct", null);
+                    return installer.
+                        fetch("selfDestruct", {
+                            workingPath: runtime.absPath,
+                            installerFilepath: runtime.installerFilepath,
+                        });
                 })
                 .then(data => {
                     installer.setBodyInstalling(false);

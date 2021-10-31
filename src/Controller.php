@@ -85,15 +85,30 @@ final class Controller
         }
     }
 
-    public function selfDestructAction(): void
+    public function selfDestructAction(array $params): void
     {
-        unlink(INSTALLER_FILEPATH);
-        if(!file_exists(LOCK_FILEPATH)) {
+        $workingPath = $params['workingPath'];
+        $installerFilepath = $params['installerFilepath'];
+        $indexFilePath = $workingPath . 'index.php';
+        if (!file_exists($workingPath)) {
+            throw new Exception(sprintf("Working path %s doesn't exists", $workingPath), 503);
+        }
+        $backupFilePath = $workingPath . 'index.chevereto.php';
+        if (!is_readable($backupFilePath)) {
+            throw new Exception(sprintf("Can't read %s", basename($backupFilePath)), 503);
+        }
+        rename($backupFilePath, $indexFilePath);
+        clearstatcache(true, $indexFilePath);
+        if(unlink($installerFilepath)) {
+            $installerErrorLog = $workingPath . 'installer.error.log';
+            if(file_exists($installerErrorLog)) {
+                unlink($installerErrorLog);
+            }
             $this->code = 200;
-            $this->response = 'installer destroyed';
+            $this->response = 'Installer destroyed';
         } else {
             $this->code = 500;
-            $this->response = 'unable to destroy installer';
+            $this->response = sprintf('Unable to destroy installer at %s', $installerFilepath);
         }
     }
 
@@ -102,7 +117,7 @@ final class Controller
         $fileBasename = 'chevereto-pkg-' . substr(bin2hex(random_bytes(8)), 0, 8) . '.zip';
         $filePath = $this->runtime->absPath . $fileBasename;
         if (file_exists($filePath)) {
-            @unlink($filePath);
+            unlink($filePath);
         }
         $isPost = false;
         $zipBall = APPLICATION['zipball'];
@@ -131,18 +146,16 @@ final class Controller
 
     public function extractAction(array $params): void
     {
-        $software = APPLICATION;
         if (!isset($params['workingPath'])) {
             throw new Exception('Missing workingPath parameter', 400);
         }
         $workingPath = $params['workingPath'];
-        if (!file_exists($workingPath) && !@mkdir($workingPath)) {
+        if (!file_exists($workingPath) && !mkdir($workingPath)) {
             throw new Exception(sprintf("Working path %s doesn't exists and can't be created", $workingPath), 503);
         }
         if (!is_readable($workingPath)) {
             throw new Exception(sprintf('Working path %s is not readable', $workingPath), 503);
         }
-
         $filePath = $params['filePath'];
         if (!is_readable($filePath)) {
             throw new Exception(sprintf("Can't read %s", basename($filePath)), 503);
@@ -165,8 +178,13 @@ final class Controller
         $zipExt->close();
         $timeTaken = round(microtime(true) - $timeStart, 2);
         unlink($filePath);
+        $indexFilePath = $workingPath . 'index.php';
+        $backupFilePath = $workingPath . 'index.chevereto.php';
+        rename($indexFilePath, $backupFilePath);
+        copy(INSTALLER_FILEPATH, $workingPath . INSTALLER_FRONT_BASENAME);
+        clearstatcache(true, $indexFilePath);
         $this->code = 200;
-        $this->response = strtr('Extraction completed (%n files in %ss)', ['%n' => $numFiles, '%s' => $timeTaken]);
+        $this->response = strtr('Extraction completed %n files in %ss', ['%n' => $numFiles, '%s' => $timeTaken]);
     }
 
     public function createEnvAction(array $params): void
@@ -194,7 +212,7 @@ EOT;
 
     public function downloadFile(string $url, array $params, string $filePath, bool $post = true): object
     {
-        $fp = @fopen($filePath, 'wb+');
+        $fp = fopen($filePath, 'wb+');
         if (!$fp) {
             throw new Exception("Can't open temp file " . $filePath . ' (wb+)');
         }
@@ -235,7 +253,7 @@ EOT;
             curl_setopt($ch, $k, $v);
         }
         logger("Fetching $url\n");
-        $file_get_contents = @curl_exec($ch);
+        $file_get_contents = curl_exec($ch);
         logger("\n");
         $transfer = curl_getinfo($ch);
         if (curl_errno($ch)) {
@@ -255,7 +273,7 @@ EOT;
             $return->json = json_decode($return->raw);
             if (is_resource($fp)) {
                 $meta_data = stream_get_meta_data($fp);
-                @unlink($meta_data['uri']);
+                unlink($meta_data['uri']);
             }
         }
         $this->code = $transfer['http_code'];
@@ -284,7 +302,6 @@ EOT;
             $threshold = $multiplier * 1000;
             if ($bytes < $threshold) {
                 $size = round($bytes / $multiplier, $round);
-
                 return "$size $v";
             }
         }

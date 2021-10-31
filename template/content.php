@@ -32,7 +32,7 @@
         <p>Confirm that the above details match to where you want to install Chevereto and that there's no other software installed.</p>
         <?php
           if (preg_match('/nginx/i', $runtime->serverSoftware)) { ?>
-          <p class="highlight">Take note on the <a href="<?php echo $runtime->rootUrl . $runtime->installerFilename . '?getNginxRules'; ?>" target="_blank">nginx server rules</a> that should be already applied to your <code>nginx.conf</code> server block. If those aren't provided this installer will fail to complete the process.</p>
+          <p class="highlight">Take note on the <a href="<?php echo $runtime->rootUrl . $runtime->installerBasename . '?getNginxRules'; ?>" target="_blank">nginx server rules</a> that should be already applied to your <code>nginx.conf</code> server block. If those aren't provided this installer will fail to complete the process.</p>
         <?php } ?>
         <div>
           <button class="action radius" data-action="show" data-arg="license">Continue</button>
@@ -198,7 +198,6 @@
       <div>
         <h1>Installation completed</h1>
         <p>You can now create your admin account and configure your website to fit your needs.</p>
-        <p class="alert">Double-check if the installer file was removed from <code><?php echo INSTALLER_FILEPATH; ?></code></p>
         <p>Take note on the installation details below.</p>
         <div class="install-details p highlight font-size-80p"></div>
         <p>💖 Hope you enjoy using Chevereto.</p>
@@ -214,7 +213,6 @@
       <div>
         <h1>Upgrade prepared</h1>
         <p>The system files have been upgraded. You can now install the upgrade which will perform the database changes needed and complete the process.</p>
-        <p class="alert">Double-check if the installer file was removed from <code><?php echo INSTALLER_FILEPATH; ?></code></p>
         <div>
           <a class="button action radius" href="<?php echo $runtime->rootUrl; ?>install">Install upgrade</a>
         </div>
