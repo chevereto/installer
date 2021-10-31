@@ -9,6 +9,11 @@ env:
 jobs:
   buildx:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ["8.0"]
+    name: Build on PHP ${{ matrix.php-versions }} ${{ matrix.operating-system }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
