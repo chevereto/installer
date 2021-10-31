@@ -15,7 +15,7 @@
 declare(strict_types=1);
 
 const APP_NAME = 'Chevereto Installer';
-const APP_VERSION = '3.0.0';
+const APP_VERSION = '3.1.0';
 const APP_URL = 'https://github.com/chevereto/installer';
 const PHP_VERSION_MIN = '7.4';
 const PHP_VERSION_RECOMMENDED = '7.4';
