@@ -1,36 +1,6 @@
 # Development
 
-## HTTP server
-
-Spawn PHP development HTTP server.
-
-* To spawn [127.0.0.1:8040/installer.php](http://127.0.0.1:8040/installer.php)
-
-```sh
-php -S 127.0.0.1:8040 -t build
-```
-
-* To spawn [127.0.0.1:8140/app.php](http://127.0.0.1:8140/app.php) - **Beware:** It will use the project path as working folder!
-
-```sh
-php -S 127.0.0.1:8140 -t .
-```
-
-## Database
-
-```sh
-docker run -p 127.0.0.1:3306:3306 \
-    --name chv-installer-db \
-    -e MYSQL_ROOT_PASSWORD=password \
-    -e MYSQL_DATABASE=chevereto \
-    -e MYSQL_USER=chevereto \
-    -e MYSQL_PASSWORD=user_database_password \
-    -d mariadb:focal
-```
-
-## Docker
-
-### Quick start
+## Quick start
 
 * Clone [chevereto/installer](https://github.com/chevereto/installer)
   * Use `4.X` branch `git switch 4.X`
@@ -52,7 +22,7 @@ Compose file: [httpd-php-dev.yml](../httpd-php-dev.yml)
 
 Alter `SOURCE` in the commands below to reflect your project path.
 
-### Up
+## Up
 
 Run this command to spawn (start) Chevereto Installer.
 
@@ -64,7 +34,7 @@ docker-compose \
     up -d
 ```
 
-### Stop
+## Stop
 
 Run this command to stop Chevereto Installer.
 
@@ -76,7 +46,7 @@ docker-compose \
     stop
 ```
 
-### Down (uninstall)
+## Down (uninstall)
 
 Run this command to down Chevereto (stop containers, remove networks and volumes created by it).
 

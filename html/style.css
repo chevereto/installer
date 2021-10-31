@@ -121,7 +121,7 @@ ul>li {
 }
 
 .highlight {
-    background: rgba(255,255,255,.5);
+    background: rgba(255, 255, 255, .5);
     border-left: 4px solid #8e44ad;
 }
 
@@ -239,6 +239,7 @@ button,
     text-decoration: none;
     border: 0;
     background-color: rgba(0, 0, 0, .05);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0);
 }
 
 button:hover,
@@ -248,7 +249,6 @@ button:hover,
 
 button:active,
 .button:active {
-    border-color: rgba(0, 0, 0, .3);
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, .3);
 }
 
@@ -256,6 +256,11 @@ button.action,
 .button.action {
     text-shadow: 1px 1px 0 rgba(0, 0, 0, .05);
     color: #FFF;
+    background: #3498db;
+}
+
+button.action:hover,
+.button.action:hover {
     background: #2980b9;
 }
 
@@ -426,8 +431,7 @@ body.body--installing .flex-box .loader {
     backdrop-filter: blur(5px);
     background-size: cover;
     background-position: center;
-    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, .2);
-    border-radius: 6px;
+    border-radius: 10px;
     min-width: 270px;
     position: relative;
     margin: 20px;
@@ -517,8 +521,6 @@ body.body--installing .flex-box .loader {
     max-height: 100%;
     margin: 20px auto;
     display: block;
-    -webkit-filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .15));
-    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .15));
 }
 
 .header svg path {
