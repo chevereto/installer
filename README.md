@@ -6,7 +6,7 @@
 
 [![Community](https://img.shields.io/badge/chv.to-community-blue?style=flat-square)](https://chv.to/community)
 
-![welcome](docs/src/welcome.png)
+<img alt="Chevereto" src="docs/src/cast.gif" width="80%">
 
 The Installer is a single `.php` file that installs Chevereto. It is an API client which interacts with `chevereto.com` API for providing Chevereto installation.
 
