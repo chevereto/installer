@@ -18,17 +18,20 @@ class Make
 {
     public string $contents;
 
+    private string $sourceDir;
+
     public function __construct(
         private string $sourceFilepath,
-        private string $targetFilepath
+        private string $targetFilepath,
     )
     {
+        $this->sourceDir = dirname($sourceFilepath) . '/';
         $this->sourceFilepath = $sourceFilepath;
         $this->targetFilepath = $targetFilepath;
         $this->contents = file_get_contents($sourceFilepath);
         $this->putTemplate('template/content.php');
-        $this->replacePHPFile("/include '(.*)';/");
-        $this->replacePHPFile("/require '(.*)';/");
+        $this->replacePHPFile("/include __DIR__ . '(.*)';/");
+        $this->replacePHPFile("/require __DIR__ . '(.*)';/");
         $this->replaceTextFile("/file_get_contents\(\'(.*)\'\)\;/");
         $this->writeFile($this->targetFilepath, $this->contents);
     }
@@ -37,7 +40,7 @@ class Make
     {
         $find = [
             'ob_start();',
-            "require '$templateFilepath';",
+            "require __DIR__ . '/$templateFilepath';",
             '$content = ob_get_clean();',
             '<?php echo $content; ?>',
         ];
@@ -45,7 +48,7 @@ class Make
             null,
             null,
             null,
-            file_get_contents($templateFilepath),
+            file_get_contents($this->sourceDir . $templateFilepath),
         ];
         $this->contents = str_replace($find, $replace, $this->contents);
     }
@@ -70,6 +73,7 @@ class Make
 
     protected function getFileContents(string $filepath)
     {
+        $filepath = $this->sourceDir . $filepath;
         $ext = pathinfo($filepath, PATHINFO_EXTENSION);
         $fileContents = file_get_contents($filepath);
         if ('php' == $ext) {

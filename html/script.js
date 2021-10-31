@@ -277,6 +277,21 @@ var installer = {
     checkLicense: function (key, callback) {
         return this.fetch("checkLicense", { license: key }, callback);
     },
+    downloadLatest: function () {
+        installer.log("Downloading latest " + applicationFullName + " release");
+        return this.fetch("download", {
+            license: "data" in installer && "license" in installer.data ? installer.data.license : ''
+        });
+    },
+    extractDownload: function (json) {
+        installer.log("Extracting " + json.data.fileBasename);
+        return installer
+            .fetch("extract", {
+                software: installer.data.software,
+                filePath: json.data.filePath,
+                workingPath: runtime.absPath,
+            });
+    },
     fetchOnError: function (data) {
         if (installer.isInstalling()) {
             installer.abortInstall();
@@ -286,7 +301,6 @@ var installer = {
         installer.log(data.message);
     },
     fetchCommonInit: function () {
-        installer.log("Downloading latest " + applicationFullName + " release");
         return this
             .fetch("download", {
                 license: "data" in installer && "license" in installer.data ? installer.data.license : ''
