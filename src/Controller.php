@@ -106,10 +106,10 @@ final class Controller
         }
         $isPost = false;
         $zipBall = APPLICATION['zipball'];
-        if($params['tag'] === 'latest') {
-            $params['tag'] = '3';
-        }
-        $tag = $params['tag'] ?? '3';        
+        $tag = $params['tag'] ?? '3';
+        if($tag === 'latest') {
+            $tag = '3';
+        }       
         $zipBall = str_replace('%tag%', $tag, $zipBall);
         $isPost = true;
         $curl = $this->downloadFile($zipBall, $params, $filePath, $isPost);
