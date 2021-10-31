@@ -32,5 +32,6 @@ jobs:
         with:
           allowUpdates: true
           removeArtifacts: true
+          omitBodyDuringUpdate: true
           artifacts: "build/installer.php"
           token: ${{ secrets.GITHUB_TOKEN }}
