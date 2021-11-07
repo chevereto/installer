@@ -10,6 +10,14 @@
 
 The Installer is a single `.php` file that installs Chevereto. It is an API client which interacts with `chevereto.com` API for providing Chevereto installation.
 
+## ⚠️ Beta notice
+
+**Important:** Chevereto V4 is still beta software. We don't recommend using this software except for development/testing purposes.
+
+If the software doesn't work for you please don't panic and [Open a Ticket](https://chv.to/open-ticket).
+
+Happy testing!
+
 ## Features
 
 * HTTP / CLI API
