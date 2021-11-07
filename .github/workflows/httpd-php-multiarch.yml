@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  GHCR_SLUG: ghcr.io/chevereto/httpd-php
+  GHCR_SLUG: ghcr.io/chevereto/httpd-php-installer
 
 jobs:
   buildx:
@@ -37,8 +37,8 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}}-installer
-            type=semver,pattern={{major}}.{{minor}}-installer
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
           labels: |
             org.opencontainers.image.title=Chevereto Installer
             org.opencontainers.image.description=Chevereto Installer

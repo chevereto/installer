@@ -17,7 +17,7 @@ services:
 
   bootstrap:
     container_name: chevereto-installer-v4
-    image: ghcr.io/chevereto/httpd-php:4-installer
+    image: ghcr.io/chevereto/httpd-php-installer:4.0
     networks:
       - chevereto
     volumes:
@@ -25,14 +25,13 @@ services:
     ports:
       - 8040:80
     restart: always
-    environment:
-      CHEVERETO_TAG: "4.0"
-      CHEVERETO_DB_HOST: database
-      CHEVERETO_DB_USER: chevereto
-      CHEVERETO_DB_PASS: user_database_password
-      CHEVERETO_DB_PORT: 3306
-      CHEVERETO_DB_NAME: chevereto
-      CHEVERETO_HTTPS: 0
+    # environment:
+    #   CHEVERETO_DB_HOST: database
+    #   CHEVERETO_DB_USER: chevereto
+    #   CHEVERETO_DB_PASS: user_database_password
+    #   CHEVERETO_DB_PORT: 3306
+    #   CHEVERETO_DB_NAME: chevereto
+    #   CHEVERETO_HTTPS: 0
 
 volumes:
   database:
