@@ -14,7 +14,7 @@ set_exception_handler(function (Throwable $e) {
         2 => "debug @ print",
         3 => "debug @ print,$device",
     ];
-    $internal_error .= ' [' . $table[$debug_level] . '] - https://chv.to/v3debug';
+    $internal_error .= ' [' . $table[$debug_level] . '] - https://chevereto.com/go/v3debug';
     $message = [$internal_error];
     $message[] = '';
     $message[] = '<b>Fatal error [' . $e->getCode() . ']:</b> ' . strip_tags($e->getMessage());

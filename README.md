@@ -1,10 +1,8 @@
 # Installer
 
-> 🔔 [Subscribe](https://chv.to/newsletter) to don't miss any update regarding Chevereto.
-
 <img alt="Chevereto" src="LOGO.svg" width="100%">
 
-[![Community](https://img.shields.io/badge/chv.to-community-blue?style=flat-square)](https://chv.to/community)
+[![Community](https://img.shields.io/badge/chevereto.com/community-blue?style=flat-square)](https://chevereto.com/community)
 
 <img alt="Chevereto" src="docs/src/cast.gif" width="80%">
 
@@ -14,7 +12,7 @@ The Installer is a single `.php` file that installs Chevereto. It is an API clie
 
 **Important:** Chevereto V4 is still beta software. We don't recommend using this software except for development/testing purposes.
 
-If the software doesn't work for you please don't panic and [Open a Ticket](https://chv.to/open-ticket).
+If the software doesn't work for you please don't panic and [Open a Ticket](https://chevereto.com/go/open-ticket).
 
 Happy testing!
 
